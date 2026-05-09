@@ -405,10 +405,19 @@ When adding new systems:
 - Tile system (individual PNG files, two-pass rendering)
 - Terrain generation (Voronoi-based)
 
+**Recently Completed (2026-05-10):**
+- ✅ Enhanced UI/UX systems (notifications, tooltips, feedback effects)
+- ✅ New game systems (water supply, underground, crime, fire, city status)
+- ✅ Verbose debug system with CLI interface
+- ✅ BGM/SFX audio system architecture
+- ✅ Enhanced title menu with particles
+- ✅ 30 new tile assets generated
+- ✅ Integration tools and enhanced launcher
+
 **In Progress (🚧):**
 - Module reorganization (planned move to `systems/`, `ui/`, `world/`)
 - Tutorial system integration
-- Sound system implementation
+- Sound system implementation (placeholder complete, real audio data needed)
 
 **Planned (📋):**
 - Tourism system
@@ -420,9 +429,10 @@ When adding new systems:
 
 ### Running the Game
 ```bash
-python main.py              # Standard launch
-python main.py --debug      # Debug mode
-python concland_mini.py     # Direct execution
+python main.py                         # Standard launch
+python3 launch_with_enhancements.py  # Enhanced launcher (new systems)
+python main.py --debug                   # Debug mode
+python concland_mini.py                  # Direct execution
 ```
 
 ### Testing
@@ -433,13 +443,20 @@ pytest misc/tests -q        # Unit tests (if pytest available)
 
 ### Key Files
 - `main.py` - Entry point
+- `launch_with_enhancements.py` - Enhanced launcher (NEW)
 - `concland_mini.py` - Core game (245KB, 7000+ lines)
+- `ui_enhancements.py` - UI enhancements (NEW)
+- `new_game_systems.py` - New game systems (NEW)
+- `verbose_debug_system.py` - Debug system (NEW)
+- `bgm_sfx_system.py` - Audio system (NEW)
 - `config/modules.json` - Module registry
 - `config/game_config.py` - Game constants
 - `integration_test.py` - Test suite
 
 ### Common Tasks
+- **Try new systems**: Use `python3 launch_with_enhancements.py` (no code changes needed)
 - **Add new system**: Create file, add to `config/modules.json`, integrate in `concland_mini.py`
 - **Add building type**: Update `CellType` enum, add tile PNGs, update costs in `game_config.py`
 - **Modify simulation balance**: Adjust parameters in `game_config.py`
 - **Debug module**: Enable in `modules.json`, set `debug_mode: true` in system settings
+- **Integrate new systems**: Follow `ENHANCED_SYSTEMS_GUIDE.md` or `INTEGRATION_GUIDE.md`
