@@ -1,0 +1,111 @@
+{
+  "eras": [
+    {
+      "id": "postwar_recovery",
+      "name": "終戦直後",
+      "japanese_name": "終戦直後",
+      "start_year": 1945,
+      "end_year": 1950,
+      "description": "焼け野原からの復興期。基本的な生活インフラの再建が急務。",
+      "background_color": [60, 60, 60],
+      "ui_theme": "gray",
+      "available_resources": ["rice", "wood", "scrap_iron"],
+      "starting_conditions": {
+        "population": 100,
+        "funds": 1000,
+        "resources": {
+          "rice": 50,
+          "wood": 30,
+          "scrap_iron": 10
+        }
+      },
+      "economic_modifiers": {
+        "construction_cost": 1.5,
+        "resource_generation": 0.5,
+        "population_growth": 0.3
+      }
+    },
+    {
+      "id": "korean_war_boom",
+      "name": "朝鮮戦争特需",
+      "japanese_name": "朝鮮戦争特需",
+      "start_year": 1950,
+      "end_year": 1955,
+      "description": "朝鮮戦争による特需で経済が急速に回復。工業生産が本格化。",
+      "background_color": [80, 60, 40],
+      "ui_theme": "brown",
+      "available_resources": ["rice", "wood", "iron", "coal", "textiles"],
+      "economic_modifiers": {
+        "construction_cost": 1.2,
+        "resource_generation": 1.5,
+        "population_growth": 0.8,
+        "special_demand": {
+          "iron": 2.0,
+          "textiles": 1.8
+        }
+      }
+    },
+    {
+      "id": "high_growth_early",
+      "name": "高度成長期前期",
+      "japanese_name": "高度成長期前期",
+      "start_year": 1955,
+      "end_year": 1965,
+      "description": "神武景気、岩戸景気で急成長。大量生産・大量消費時代の始まり。",
+      "background_color": [40, 80, 60],
+      "ui_theme": "green",
+      "available_resources": ["rice", "wood", "iron", "coal", "oil", "plastics", "electronics"],
+      "economic_modifiers": {
+        "construction_cost": 1.0,
+        "resource_generation": 2.0,
+        "population_growth": 1.2,
+        "technology_bonus": 1.5
+      }
+    },
+    {
+      "id": "olympic_era",
+      "name": "東京オリンピック時代",
+      "japanese_name": "東京オリンピック時代", 
+      "start_year": 1965,
+      "end_year": 1970,
+      "description": "国際社会復帰の象徴。インフラ整備と現代都市の完成。",
+      "background_color": [40, 60, 100],
+      "ui_theme": "blue",
+      "available_resources": ["rice", "wood", "iron", "coal", "oil", "plastics", "electronics", "nuclear", "semiconductors"],
+      "economic_modifiers": {
+        "construction_cost": 0.8,
+        "resource_generation": 2.5,
+        "population_growth": 1.5,
+        "technology_bonus": 2.0,
+        "infrastructure_bonus": 1.8
+      }
+    }
+  ],
+  "transition_requirements": {
+    "postwar_recovery_to_korean_war_boom": {
+      "min_population": 500,
+      "min_buildings": {
+        "residence": 10,
+        "shop": 3
+      },
+      "required_resources": 100
+    },
+    "korean_war_boom_to_high_growth_early": {
+      "min_population": 2000,
+      "min_buildings": {
+        "factory": 5,
+        "school": 2
+      },
+      "required_technology": ["basic_industry"]
+    },
+    "high_growth_early_to_olympic_era": {
+      "min_population": 10000,
+      "min_buildings": {
+        "department_store": 2,
+        "hospital": 1,
+        "station": 1
+      },
+      "required_technology": ["heavy_industry", "modern_construction"]
+    }
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "modules": [
+    {
+      "name": "traffic_system",
+      "version": "1.0.0",
+      "description": "高度な交通管理システム / Advanced Traffic System",
+      "dependencies": [],
+      "enabled": true,
+      "class_name": "AdvancedTrafficSystem",
+      "config": {
+        "max_pathfinding_distance": 50,
+        "bus_spawn_interval": 300,
+        "traffic_light_cycle": 180
+      }
+    },
+    {
+      "name": "economic_system",
+      "version": "1.0.0",
+      "description": "経済管理システム / Economic Management System",
+      "dependencies": [],
+      "enabled": true,
+      "class_name": "ConcLandEconomicSystem",
+      "config": {
+        "initial_funds": 10000,
+        "tax_rates": {
+          "residential": 0.05,
+          "commercial": 0.08,
+          "industrial": 0.10
+        }
+      }
+    },
+    {
+      "name": "disaster_system",
+      "version": "1.0.0",
+      "description": "災害シミュレーションシステム / Disaster Simulation System",
+      "dependencies": [],
+      "enabled": true,
+      "class_name": "DisasterSystem",
+      "config": {
+        "disaster_probability": 0.001,
+        "warning_time": 300,
+        "damage_multiplier": 1.0
+      }
+    },
+    {
+      "name": "sound_effects_system",
+      "version": "1.0.0",
+      "description": "サウンドエフェクトシステム / Sound Effects System",
+      "dependencies": [],
+      "enabled": false,
+      "class_name": "SoundEffectsSystem",
+      "config": {
+        "master_volume": 0.7,
+        "sfx_volume": 0.8,
+        "ambient_volume": 0.5
+      }
+    },
+    {
+      "name": "visual_system",
+      "version": "1.0.0",
+      "description": "ビジュアル強化システム / Visual Enhancement System",
+      "dependencies": [],
+      "enabled": true,
+      "class_name": "VisualSystem",
+      "config": {
+        "theme": "modern",
+        "animations_enabled": true,
+        "particle_limit": 1000
+      }
+    },
+    {
+      "name": "advanced_window_system",
+      "version": "1.0.0",
+      "description": "高度なウィンドウシステム / Advanced Window System",
+      "dependencies": ["visual_system"],
+      "enabled": true,
+      "class_name": "WindowSystem",
+      "config": {
+        "default_layout": "standard",
+        "enable_docking": true,
+        "enable_tabs": true
+      }
+    },
+    {
+      "name": "data_visualization",
+      "version": "1.0.0",
+      "description": "データビジュアライゼーション / Data Visualization",
+      "dependencies": ["visual_system"],
+      "enabled": true,
+      "class_name": "Dashboard",
+      "config": {
+        "chart_update_interval": 60,
+        "history_size": 100,
+        "auto_scale": true
+      }
+    },
+    {
+      "name": "tutorial_system",
+      "version": "1.0.0",
+      "description": "チュートリアルシステム / Tutorial System",
+      "dependencies": [],
+      "enabled": false,
+      "class_name": "TutorialManager",
+      "config": {
+        "auto_start": true,
+        "hint_delay": 5000,
+        "completion_tracking": true
+      }
+    },
+    {
+      "name": "difficulty_system",
+      "version": "1.0.0",
+      "description": "難易度管理システム / Difficulty Management",
+      "dependencies": [],
+      "enabled": true,
+      "class_name": "DifficultyManager",
+      "config": {
+        "default_difficulty": "normal",
+        "allow_change_midgame": true
+      }
+    },
+    {
+      "name": "goals_challenges_system",
+      "version": "1.0.0",
+      "description": "目標とチャレンジシステム / Goals and Challenges",
+      "dependencies": [],
+      "enabled": true,
+      "class_name": "GoalsManager",
+      "config": {
+        "daily_challenges": true,
+        "achievement_notifications": true
+      }
+    },
+    {
+      "name": "rci_zone_fix",
+      "version": "1.0.0",
+      "description": "RCIゾーン修正システム / RCI Zone Fix System",
+      "dependencies": [],
+      "enabled": true,
+      "class_name": "RCIZoneManager",
+      "config": {
+        "zone_size": 3,
+        "reserve_area": true,
+        "prevent_overlap": true
+      }
+    },
+    {
+      "name": "train_system",
+      "version": "1.0.0",
+      "description": "鉄道システム / Railway System",
+      "dependencies": [],
+      "enabled": true,
+      "class_name": "TrainSystem",
+      "config": {
+        "max_trains": 10,
+        "train_speed": 2,
+        "auto_spawn": true
+      }
+    },
+    {
+      "name": "title_menu_system",
+      "version": "1.0.0",
+      "description": "タイトル・メニューシステム / Title Menu System",
+      "dependencies": [],
+      "enabled": true,
+      "class_name": "GameLauncher",
+      "config": {
+        "skip_title": false,
+        "auto_load_last": false,
+        "menu_animation": true
+      }
+    }
+  ],
+  "system_settings": {
+    "auto_load_modules": true,
+    "module_hot_reload": false,
+    "debug_mode": false,
+    "performance_monitoring": true
+  }
+}

@@ -1,0 +1,26 @@
+# Tilemap Metadata
+
+## Tile Size: 8x8 pixels
+## Image Size: 256x256 pixels (32x32 tiles)
+
+## Sections:
+- Row 0-1: Terrain (soil, grass, etc.)
+- Row 2-3: Water (4 frames animation)
+- Row 4-7: Residential (empty, making, low, middle, high)
+- Row 8-11: Commercial (empty, making, low, middle, high)
+- Row 12-15: Industrial (empty, making, low, middle, high)
+- Row 16-17: Agricultural (fields, greenhouse, ranch)
+- Row 18-19: Roads (all connection patterns)
+- Row 20-23: Power facilities
+- Row 24-27: Public facilities (hospital, police, fire, school)
+- Row 28-31: Parks, forests, and effects
+
+## Special tiles:
+- 16x16 tiles: Middle density buildings, some facilities
+- 32x32 tiles: High density buildings, large facilities
+
+## Animation frames:
+- Water: 4 frames (horizontal)
+- Fire: 4 frames (horizontal)
+- Construction: 4 frames (horizontal)
+- Wind turbine: 3 frames (horizontal)

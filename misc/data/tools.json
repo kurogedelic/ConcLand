@@ -1,0 +1,224 @@
+{
+  "categories": {
+    "residential": {
+      "name": "Residential",
+      "japanese_name": "住宅",
+      "color": [100, 200, 100]
+    },
+    "commercial": {
+      "name": "Commercial", 
+      "japanese_name": "商業",
+      "color": [100, 100, 200]
+    },
+    "industrial": {
+      "name": "Industrial",
+      "japanese_name": "工業", 
+      "color": [200, 200, 100]
+    },
+    "infrastructure": {
+      "name": "Infrastructure",
+      "japanese_name": "インフラ",
+      "color": [150, 150, 150]
+    },
+    "power": {
+      "name": "Power",
+      "japanese_name": "電力",
+      "color": [200, 200, 50]
+    },
+    "transport": {
+      "name": "Transport",
+      "japanese_name": "交通",
+      "color": [80, 80, 80]
+    },
+    "public": {
+      "name": "Public Services",
+      "japanese_name": "公共サービス",
+      "color": [150, 100, 200]
+    },
+    "recreation": {
+      "name": "Recreation",
+      "japanese_name": "レクリエーション",
+      "color": [50, 150, 50]
+    },
+    "utilities": {
+      "name": "Utilities",
+      "japanese_name": "ユーティリティ",
+      "color": [200, 50, 50]
+    }
+  },
+  "tools": [
+    {
+      "id": "residence",
+      "name": "Residence", 
+      "japanese_name": "住宅",
+      "category": "residential",
+      "type": "building",
+      "cost": 100,
+      "icon_index": 0,
+      "building_type": "RESIDENCE",
+      "size": [1, 1]
+    },
+    {
+      "id": "commercial",
+      "name": "Commercial",
+      "japanese_name": "商業",
+      "category": "commercial", 
+      "type": "building",
+      "cost": 150,
+      "icon_index": 1,
+      "building_type": "COMMERCIAL",
+      "size": [1, 1]
+    },
+    {
+      "id": "industrial", 
+      "name": "Industrial",
+      "japanese_name": "工業",
+      "category": "industrial",
+      "type": "building", 
+      "cost": 200,
+      "icon_index": 2,
+      "building_type": "INDUSTRIAL",
+      "size": [1, 1]
+    },
+    {
+      "id": "road",
+      "name": "Road",
+      "japanese_name": "道路", 
+      "category": "infrastructure",
+      "type": "infrastructure",
+      "cost": 10,
+      "icon_index": 3,
+      "infrastructure_type": "ROAD"
+    },
+    {
+      "id": "powerplant",
+      "name": "Power Plant",
+      "japanese_name": "発電所",
+      "category": "power",
+      "type": "building",
+      "cost": 3000,
+      "icon_index": 4,
+      "building_type": "POWERPLANT",
+      "size": [2, 2]
+    },
+    {
+      "id": "agricultural",
+      "name": "Farm",
+      "japanese_name": "農場", 
+      "category": "industrial",
+      "type": "building",
+      "cost": 300,
+      "icon_index": 5,
+      "building_type": "AGRICULTURAL",
+      "size": [2, 2]
+    },
+    {
+      "id": "solar",
+      "name": "Solar Panel",
+      "japanese_name": "太陽光パネル",
+      "category": "power",
+      "type": "building", 
+      "cost": 1000,
+      "icon_index": 6,
+      "building_type": "SOLAR",
+      "size": [1, 1]
+    },
+    {
+      "id": "wind",
+      "name": "Wind Turbine",
+      "japanese_name": "風力発電",
+      "category": "power",
+      "type": "building",
+      "cost": 500,
+      "icon_index": 7,
+      "building_type": "WIND", 
+      "size": [1, 1]
+    },
+    {
+      "id": "nuclear",
+      "name": "Nuclear Plant",
+      "japanese_name": "原子力発電所",
+      "category": "power",
+      "type": "building",
+      "cost": 5000,
+      "icon_index": 8,
+      "building_type": "NUCLEAR",
+      "size": [3, 3]
+    },
+    {
+      "id": "gas",
+      "name": "Gas Plant", 
+      "japanese_name": "ガス発電所",
+      "category": "power",
+      "type": "building",
+      "cost": 2000,
+      "icon_index": 9,
+      "building_type": "GAS",
+      "size": [2, 2]
+    },
+    {
+      "id": "park",
+      "name": "Park",
+      "japanese_name": "公園",
+      "category": "recreation",
+      "type": "building",
+      "cost": 50,
+      "icon_index": 10,
+      "building_type": "PARK",
+      "size": [1, 1]
+    },
+    {
+      "id": "shrine",
+      "name": "Shrine",
+      "japanese_name": "神社",
+      "category": "recreation", 
+      "type": "building",
+      "cost": 100,
+      "icon_index": 11,
+      "building_type": "SHRINE",
+      "size": [1, 1]
+    },
+    {
+      "id": "bulldozer",
+      "name": "Bulldozer",
+      "japanese_name": "ブルドーザー",
+      "category": "utilities",
+      "type": "utility",
+      "cost": 0,
+      "icon_index": 12
+    },
+    {
+      "id": "school",
+      "name": "School",
+      "japanese_name": "学校",
+      "category": "public",
+      "type": "building",
+      "cost": 800,
+      "icon_index": 13,
+      "building_type": "SCHOOL",
+      "size": [2, 2]
+    },
+    {
+      "id": "hospital",
+      "name": "Hospital", 
+      "japanese_name": "病院",
+      "category": "public",
+      "type": "building",
+      "cost": 1200,
+      "icon_index": 14,
+      "building_type": "HOSPITAL",
+      "size": [2, 2]
+    },
+    {
+      "id": "police",
+      "name": "Police Station",
+      "japanese_name": "警察署",
+      "category": "public",
+      "type": "building", 
+      "cost": 600,
+      "icon_index": 15,
+      "building_type": "POLICE",
+      "size": [1, 1]
+    }
+  ]
+}

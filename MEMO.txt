@@ -1,0 +1,18 @@
+  - Q: 住宅 (Residential)
+  - W: 商業 (Commercial)
+  - E: 工業 (Industrial)
+  - R: 道路 (Road)
+  - T: 鉄道 (Rail)
+  - Y: 公園 (Park)
+  - U: 電線 (Wire)
+  - I: 石炭発電所 (Coal Plant)
+  - O: 原子力発電所 (Nuclear Plant)
+  - P: 警察 (Police)
+  -  (バックスラッシュ): ブルドーザー
+
+  その他のキー：
+
+  - B: アイテムパレット開閉（旧A）
+  - M: セーブ（旧O）- 確認ダイアログ付き
+  - N: ロード（旧I）- 確認ダイアログ付き
+  - G: 地形のみセーブ（旧T）

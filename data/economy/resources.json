@@ -1,0 +1,360 @@
+{
+  "categories": {
+    "food": {
+      "name": "Food",
+      "japanese_name": "食料",
+      "color": [200, 150, 100]
+    },
+    "materials": {
+      "name": "Materials", 
+      "japanese_name": "資材",
+      "color": [150, 150, 150]
+    },
+    "energy": {
+      "name": "Energy",
+      "japanese_name": "エネルギー",
+      "color": [255, 200, 50]
+    },
+    "luxury": {
+      "name": "Luxury",
+      "japanese_name": "贅沢品", 
+      "color": [200, 100, 200]
+    },
+    "industrial": {
+      "name": "Industrial",
+      "japanese_name": "工業品",
+      "color": [100, 150, 200]
+    }
+  },
+  "resources": {
+    "rice": {
+      "id": "rice",
+      "name": "Rice",
+      "japanese_name": "米",
+      "category": "food",
+      "description": "Basic food staple",
+      "base_price": 100,
+      "storage_decay": 0.02,
+      "color": [220, 200, 150],
+      "icon_index": 0,
+      "availability": {
+        "start_era": "postwar_recovery",
+        "end_era": null
+      },
+      "production": {
+        "sources": ["AGRICULTURAL"],
+        "base_rate": 8,
+        "seasonal_modifier": {
+          "spring": 1.2,
+          "summer": 1.5,
+          "autumn": 1.8,
+          "winter": 0.5
+        }
+      },
+      "consumption": {
+        "per_population": 0.15,
+        "buildings": {
+          "COMMERCIAL": 2,
+          "RESTAURANT": 5
+        }
+      }
+    },
+    "wood": {
+      "id": "wood",
+      "name": "Wood",
+      "japanese_name": "木材",
+      "category": "materials",
+      "description": "Construction material",
+      "base_price": 80,
+      "storage_decay": 0.005,
+      "color": [139, 90, 43],
+      "icon_index": 1,
+      "availability": {
+        "start_era": "postwar_recovery",
+        "end_era": null
+      },
+      "production": {
+        "sources": ["FORESTRY", "SAWMILL"],
+        "base_rate": 6,
+        "seasonal_modifier": {
+          "spring": 1.0,
+          "summer": 1.1,
+          "autumn": 1.3,
+          "winter": 0.8
+        }
+      },
+      "consumption": {
+        "per_population": 0.05,
+        "buildings": {
+          "RESIDENTIAL": 1,
+          "COMMERCIAL": 0.5,
+          "CONSTRUCTION": 10
+        }
+      }
+    },
+    "steel": {
+      "id": "steel",
+      "name": "Steel",
+      "japanese_name": "鉄鋼",
+      "category": "materials",
+      "description": "Industrial construction material",
+      "base_price": 200,
+      "storage_decay": 0.001,
+      "color": [120, 120, 130],
+      "icon_index": 2,
+      "availability": {
+        "start_era": "korean_war_boom", 
+        "end_era": null
+      },
+      "production": {
+        "sources": ["STEEL_MILL", "INDUSTRIAL"],
+        "base_rate": 4,
+        "seasonal_modifier": {
+          "spring": 1.0,
+          "summer": 1.0,
+          "autumn": 1.0,
+          "winter": 1.0
+        }
+      },
+      "consumption": {
+        "per_population": 0.02,
+        "buildings": {
+          "INDUSTRIAL": 3,
+          "CONSTRUCTION": 8,
+          "RAIL_STATION": 15
+        }
+      }
+    },
+    "electricity": {
+      "id": "electricity",
+      "name": "Electricity",
+      "japanese_name": "電力",
+      "category": "energy",
+      "description": "Power for buildings and industry",
+      "base_price": 50,
+      "storage_decay": 0.0,
+      "color": [255, 255, 100],
+      "icon_index": 3,
+      "availability": {
+        "start_era": "postwar_recovery",
+        "end_era": null
+      },
+      "production": {
+        "sources": ["COAL_PLANT", "OIL_PLANT", "NUCLEAR_PLANT", "SOLAR_PLANT", "WIND_PLANT"],
+        "base_rate": 20,
+        "seasonal_modifier": {
+          "spring": 1.0,
+          "summer": 1.2,
+          "autumn": 1.0,
+          "winter": 1.3
+        }
+      },
+      "consumption": {
+        "per_population": 0.5,
+        "buildings": {
+          "RESIDENTIAL": 2,
+          "COMMERCIAL": 4,
+          "INDUSTRIAL": 8,
+          "SCHOOL": 6,
+          "HOSPITAL": 10
+        }
+      }
+    },
+    "fish": {
+      "id": "fish",
+      "name": "Fish",
+      "japanese_name": "魚",
+      "category": "food",
+      "description": "Fresh seafood",
+      "base_price": 120,
+      "storage_decay": 0.05,
+      "color": [100, 150, 200],
+      "icon_index": 4,
+      "availability": {
+        "start_era": "postwar_recovery",
+        "end_era": null
+      },
+      "production": {
+        "sources": ["FISHING_PORT", "SEAPORT"],
+        "base_rate": 10,
+        "seasonal_modifier": {
+          "spring": 1.3,
+          "summer": 1.1,
+          "autumn": 1.4,
+          "winter": 0.7
+        }
+      },
+      "consumption": {
+        "per_population": 0.1,
+        "buildings": {
+          "COMMERCIAL": 3,
+          "RESTAURANT": 8
+        }
+      }
+    },
+    "textiles": {
+      "id": "textiles",
+      "name": "Textiles",
+      "japanese_name": "繊維",
+      "category": "industrial",
+      "description": "Clothing and fabric",
+      "base_price": 150,
+      "storage_decay": 0.01,
+      "color": [200, 100, 150],
+      "icon_index": 5,
+      "availability": {
+        "start_era": "postwar_recovery",
+        "end_era": null
+      },
+      "production": {
+        "sources": ["TEXTILE_MILL", "INDUSTRIAL"],
+        "base_rate": 5,
+        "seasonal_modifier": {
+          "spring": 1.0,
+          "summer": 1.0,
+          "autumn": 1.2,
+          "winter": 1.1
+        }
+      },
+      "consumption": {
+        "per_population": 0.08,
+        "buildings": {
+          "COMMERCIAL": 4,
+          "RESIDENTIAL": 1
+        }
+      }
+    },
+    "electronics": {
+      "id": "electronics", 
+      "name": "Electronics",
+      "japanese_name": "電子機器",
+      "category": "industrial",
+      "description": "Modern electronic devices",
+      "base_price": 300,
+      "storage_decay": 0.008,
+      "color": [50, 200, 100],
+      "icon_index": 6,
+      "availability": {
+        "start_era": "high_growth_early",
+        "end_era": null
+      },
+      "production": {
+        "sources": ["ELECTRONICS_FACTORY", "HIGH_TECH"],
+        "base_rate": 3,
+        "seasonal_modifier": {
+          "spring": 1.0,
+          "summer": 1.0, 
+          "autumn": 1.0,
+          "winter": 1.0
+        }
+      },
+      "consumption": {
+        "per_population": 0.03,
+        "buildings": {
+          "COMMERCIAL": 5,
+          "OFFICE": 8,
+          "UNIVERSITY": 6
+        }
+      }
+    },
+    "sake": {
+      "id": "sake",
+      "name": "Sake",
+      "japanese_name": "日本酒",
+      "category": "luxury",
+      "description": "Traditional Japanese rice wine",
+      "base_price": 250,
+      "storage_decay": 0.003,
+      "color": [200, 200, 250],
+      "icon_index": 7,
+      "availability": {
+        "start_era": "postwar_recovery",
+        "end_era": null
+      },
+      "production": {
+        "sources": ["BREWERY", "AGRICULTURAL"],
+        "base_rate": 2,
+        "seasonal_modifier": {
+          "spring": 1.2,
+          "summer": 0.8,
+          "autumn": 1.5,
+          "winter": 1.1
+        }
+      },
+      "consumption": {
+        "per_population": 0.02,
+        "buildings": {
+          "COMMERCIAL": 2,
+          "RESTAURANT": 6,
+          "ONSEN": 4
+        }
+      }
+    },
+    "coal": {
+      "id": "coal",
+      "name": "Coal", 
+      "japanese_name": "石炭",
+      "category": "energy",
+      "description": "Fossil fuel for power generation",
+      "base_price": 60,
+      "storage_decay": 0.001,
+      "color": [60, 60, 60],
+      "icon_index": 8,
+      "availability": {
+        "start_era": "postwar_recovery",
+        "end_era": "olympic_era"
+      },
+      "production": {
+        "sources": ["COAL_MINE"],
+        "base_rate": 15,
+        "seasonal_modifier": {
+          "spring": 1.0,
+          "summer": 0.9,
+          "autumn": 1.1,
+          "winter": 1.2
+        }
+      },
+      "consumption": {
+        "per_population": 0.01,
+        "buildings": {
+          "COAL_PLANT": 25,
+          "STEEL_MILL": 12,
+          "INDUSTRIAL": 3
+        }
+      }
+    },
+    "oil": {
+      "id": "oil",
+      "name": "Oil",
+      "japanese_name": "石油", 
+      "category": "energy",
+      "description": "Petroleum for energy and industry",
+      "base_price": 180,
+      "storage_decay": 0.002,
+      "color": [80, 80, 40],
+      "icon_index": 9,
+      "availability": {
+        "start_era": "korean_war_boom",
+        "end_era": null
+      },
+      "production": {
+        "sources": ["OIL_REFINERY"],
+        "base_rate": 8,
+        "seasonal_modifier": {
+          "spring": 1.0,
+          "summer": 1.1,
+          "autumn": 1.0,
+          "winter": 1.2
+        }
+      },
+      "consumption": {
+        "per_population": 0.05,
+        "buildings": {
+          "OIL_PLANT": 20,
+          "INDUSTRIAL": 5,
+          "TRANSPORT": 8
+        }
+      }
+    }
+  }
+}

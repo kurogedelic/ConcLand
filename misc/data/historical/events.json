@@ -1,0 +1,460 @@
+{
+  "historical_events": [
+    {
+      "id": "korean_war_start",
+      "name": "Korean War Begins",
+      "japanese_name": "朝鮮戦争勃発",
+      "trigger_date": "1950-06-25",
+      "era": "korean_war_boom",
+      "category": "economic",
+      "priority": "major",
+      "description": "朝鮮戦争が勃発。軍需物資の特需により日本経済が急激に回復。",
+      "duration_months": 36,
+      "effects": {
+        "economic": {
+          "resource_demand": {
+            "iron": 2.5,
+            "textiles": 3.0,
+            "coal": 1.8
+          },
+          "price_boost": {
+            "iron": 1.4,
+            "textiles": 1.6
+          },
+          "export_bonus": 1.5,
+          "funds_bonus": 5000
+        },
+        "population": {
+          "growth_rate": 1.2,
+          "urban_migration": 1.5
+        },
+        "technology": {
+          "unlock": ["mass_production", "textile_machinery"]
+        },
+        "buildings": {
+          "unlock": ["textile_factory", "steel_mill"]
+        }
+      },
+      "notification": {
+        "title": "朝鮮戦争勃発！",
+        "message": "朝鮮戦争により軍需物資の特需が発生しました。この機会を活かして工業基盤を強化しましょう。",
+        "icon": "war",
+        "sound": "important_event"
+      }
+    },
+    {
+      "id": "tv_broadcasting_start",
+      "name": "Television Broadcasting Begins",
+      "japanese_name": "テレビ放送開始",
+      "trigger_date": "1953-02-01",
+      "era": "korean_war_boom",
+      "category": "social",
+      "priority": "major",
+      "description": "NHKがテレビ放送を開始。家電ブームの始まり。",
+      "duration_months": 60,
+      "effects": {
+        "economic": {
+          "resource_demand": {
+            "electronics": 2.0,
+            "plastics": 1.5
+          },
+          "new_industry": "electronics"
+        },
+        "population": {
+          "happiness_bonus": 0.2,
+          "consumption_increase": 1.3
+        },
+        "technology": {
+          "unlock": ["television_tech", "electronics_industry"]
+        },
+        "buildings": {
+          "unlock": ["electronics_factory", "tv_tower"]
+        }
+      },
+      "notification": {
+        "title": "テレビ放送開始！",
+        "message": "テレビ放送が開始されました。新しい娯楽産業と家電ブームが期待されます。",
+        "icon": "tv",
+        "sound": "technology_advance"
+      }
+    },
+    {
+      "id": "no_longer_postwar",
+      "name": "No Longer Postwar",
+      "japanese_name": "もはや戦後ではない",
+      "trigger_date": "1956-07-17",
+      "era": "high_growth_early",
+      "category": "milestone",
+      "priority": "major",
+      "description": "経済白書で「もはや戦後ではない」と宣言。高度経済成長期の到来。",
+      "duration_months": 12,
+      "effects": {
+        "economic": {
+          "gdp_growth": 1.5,
+          "investment_bonus": 1.3,
+          "construction_cost": 0.9
+        },
+        "population": {
+          "happiness_bonus": 0.3,
+          "growth_rate": 1.4
+        },
+        "technology": {
+          "research_speed": 1.4
+        }
+      },
+      "notification": {
+        "title": "もはや戦後ではない！",
+        "message": "戦後復興が完了し、高度経済成長期に入りました。更なる発展を目指しましょう。",
+        "icon": "growth",
+        "sound": "achievement"
+      }
+    },
+    {
+      "id": "tokyo_tower_completion",
+      "name": "Tokyo Tower Completed",
+      "japanese_name": "東京タワー完成",
+      "trigger_date": "1958-12-23",
+      "era": "high_growth_early",
+      "category": "infrastructure",
+      "priority": "major",
+      "description": "東京タワーが完成。日本の技術力と復興の象徴。",
+      "duration_months": 6,
+      "effects": {
+        "economic": {
+          "tourism_bonus": 1.5,
+          "prestige_bonus": 1.3
+        },
+        "population": {
+          "happiness_bonus": 0.4,
+          "pride_bonus": 0.5
+        },
+        "technology": {
+          "unlock": ["broadcasting_tech", "tower_construction"]
+        },
+        "buildings": {
+          "unlock": ["radio_tower", "observation_deck"]
+        }
+      },
+      "notification": {
+        "title": "東京タワー完成！",
+        "message": "東京タワーが完成しました。日本復興の象徴として、国民の誇りとなるでしょう。",
+        "icon": "tower",
+        "sound": "construction_complete"
+      }
+    },
+    {
+      "id": "income_doubling_plan",
+      "name": "Income Doubling Plan",
+      "japanese_name": "所得倍増計画",
+      "trigger_date": "1960-12-27",
+      "era": "high_growth_early",
+      "category": "policy",
+      "priority": "major",
+      "description": "池田勇人首相が所得倍増計画を発表。10年で所得を2倍にする目標。",
+      "duration_months": 120,
+      "effects": {
+        "economic": {
+          "income_growth": 1.8,
+          "industrial_growth": 1.6,
+          "infrastructure_bonus": 1.4
+        },
+        "population": {
+          "growth_rate": 1.3,
+          "happiness_bonus": 0.2
+        },
+        "technology": {
+          "research_funding": 1.5
+        }
+      },
+      "notification": {
+        "title": "所得倍増計画発表！",
+        "message": "政府が所得倍増計画を発表しました。10年で所得を2倍にする野心的な目標です。",
+        "icon": "policy",
+        "sound": "policy_announcement"
+      }
+    },
+    {
+      "id": "tokyo_olympics_announcement",
+      "name": "Tokyo Olympics Announced",
+      "japanese_name": "東京オリンピック開催決定",
+      "trigger_date": "1959-05-26",
+      "era": "high_growth_early",
+      "category": "infrastructure",
+      "priority": "major",
+      "description": "1964年東京オリンピック開催が決定。インフラ整備が加速。",
+      "duration_months": 60,
+      "effects": {
+        "economic": {
+          "construction_demand": 2.0,
+          "tourism_preparation": 1.5,
+          "infrastructure_budget": 1.8
+        },
+        "population": {
+          "happiness_bonus": 0.5,
+          "international_prestige": 1.4
+        },
+        "technology": {
+          "unlock": ["modern_architecture", "rapid_transit"]
+        },
+        "buildings": {
+          "unlock": ["olympic_stadium", "bullet_train_station"]
+        }
+      },
+      "notification": {
+        "title": "東京オリンピック開催決定！",
+        "message": "1964年東京オリンピックの開催が決定しました。インフラ整備を急いで進めましょう。",
+        "icon": "olympics",
+        "sound": "celebration"
+      }
+    },
+    {
+      "id": "tokyo_olympics_opening",
+      "name": "Tokyo Olympics Opening",
+      "japanese_name": "東京オリンピック開会",
+      "trigger_date": "1964-10-10",
+      "era": "olympic_era",
+      "category": "milestone",
+      "priority": "major",
+      "description": "東京オリンピック開会。日本の国際社会復帰の象徴。",
+      "duration_months": 1,
+      "effects": {
+        "economic": {
+          "tourism_boom": 3.0,
+          "international_trade": 1.6,
+          "prestige_bonus": 2.0
+        },
+        "population": {
+          "happiness_bonus": 1.0,
+          "national_pride": 1.5
+        },
+        "technology": {
+          "international_tech_exchange": 1.4
+        }
+      },
+      "notification": {
+        "title": "東京オリンピック開会！",
+        "message": "東京オリンピックが開会しました。世界に日本の復興を示す記念すべき日です。",
+        "icon": "olympics_flame",
+        "sound": "olympic_fanfare"
+      }
+    },
+    {
+      "id": "bullet_train_opening",
+      "name": "Bullet Train Opens",
+      "japanese_name": "新幹線開通",
+      "trigger_date": "1964-10-01",
+      "era": "olympic_era",
+      "category": "infrastructure",
+      "priority": "major",
+      "description": "東海道新幹線が開通。世界初の高速鉄道。",
+      "duration_months": 12,
+      "effects": {
+        "economic": {
+          "transport_efficiency": 2.0,
+          "regional_development": 1.5,
+          "tourism_boost": 1.8
+        },
+        "population": {
+          "mobility_bonus": 1.6,
+          "happiness_bonus": 0.3
+        },
+        "technology": {
+          "unlock": ["high_speed_rail", "precision_engineering"]
+        },
+        "buildings": {
+          "unlock": ["shinkansen_station", "rail_depot"]
+        }
+      },
+      "notification": {
+        "title": "新幹線開通！",
+        "message": "東海道新幹線が開通しました。世界最速の鉄道が日本の交通を革命的に変えます。",
+        "icon": "bullet_train",
+        "sound": "train_horn"
+      }
+    },
+    {
+      "id": "gnp_world_second",
+      "name": "GNP World Second",
+      "japanese_name": "GNP世界第2位達成",
+      "trigger_date": "1968-12-31",
+      "era": "olympic_era",
+      "category": "milestone",
+      "priority": "major",
+      "description": "日本のGNPが世界第2位に。奇跡の復興完了。",
+      "duration_months": 24,
+      "effects": {
+        "economic": {
+          "global_influence": 2.0,
+          "export_capacity": 1.8,
+          "financial_power": 1.6
+        },
+        "population": {
+          "happiness_bonus": 0.6,
+          "living_standard": 1.4
+        },
+        "technology": {
+          "advanced_research": 1.5
+        }
+      },
+      "notification": {
+        "title": "GNP世界第2位達成！",
+        "message": "ついに日本のGNPが世界第2位になりました。戦後復興の奇跡的な成功です。",
+        "icon": "achievement",
+        "sound": "victory_fanfare"
+      }
+    }
+  ],
+  "disaster_events": [
+    {
+      "id": "great_kanto_earthquake",
+      "name": "Great Earthquake",
+      "japanese_name": "大地震",
+      "category": "disaster",
+      "priority": "major",
+      "probability": 0.02,
+      "description": "大規模地震が発生。建物に甚大な被害。",
+      "effects": {
+        "buildings": {
+          "damage_rate": 0.3,
+          "destruction_chance": 0.1
+        },
+        "economic": {
+          "reconstruction_cost": 10000,
+          "production_penalty": 0.5,
+          "duration_months": 6
+        },
+        "population": {
+          "casualty_rate": 0.05,
+          "happiness_penalty": -0.4
+        }
+      }
+    },
+    {
+      "id": "major_typhoon",
+      "name": "Major Typhoon",
+      "japanese_name": "大型台風",
+      "category": "disaster",
+      "priority": "medium",
+      "probability": 0.08,
+      "seasonal": "summer",
+      "description": "大型台風が襲来。農作物と建物に被害。",
+      "effects": {
+        "buildings": {
+          "damage_rate": 0.15,
+          "agricultural_damage": 0.4
+        },
+        "economic": {
+          "rice_loss": 0.3,
+          "reconstruction_cost": 3000
+        },
+        "population": {
+          "happiness_penalty": -0.2
+        }
+      }
+    },
+    {
+      "id": "major_fire",
+      "name": "Major Fire",
+      "japanese_name": "大火災",
+      "category": "disaster",
+      "priority": "medium",
+      "probability": 0.05,
+      "seasonal": "winter",
+      "description": "木造建築密集地で大火災が発生。",
+      "effects": {
+        "buildings": {
+          "fire_damage": 0.25,
+          "wooden_vulnerability": 2.0
+        },
+        "economic": {
+          "reconstruction_cost": 5000
+        },
+        "population": {
+          "casualty_rate": 0.02,
+          "happiness_penalty": -0.3
+        }
+      }
+    }
+  ],
+  "event_chains": [
+    {
+      "id": "korean_war_chain",
+      "name": "Korean War Economic Boom",
+      "events": [
+        "korean_war_start",
+        "industrial_expansion",
+        "labor_shortage",
+        "wage_increase"
+      ],
+      "dependencies": {
+        "industrial_expansion": ["korean_war_start"],
+        "labor_shortage": ["industrial_expansion"],
+        "wage_increase": ["labor_shortage"]
+      }
+    },
+    {
+      "id": "olympics_preparation_chain",
+      "name": "Olympics Preparation",
+      "events": [
+        "tokyo_olympics_announcement",
+        "infrastructure_rush",
+        "bullet_train_construction",
+        "bullet_train_opening",
+        "tokyo_olympics_opening"
+      ],
+      "dependencies": {
+        "infrastructure_rush": ["tokyo_olympics_announcement"],
+        "bullet_train_construction": ["infrastructure_rush"],
+        "bullet_train_opening": ["bullet_train_construction"],
+        "tokyo_olympics_opening": ["bullet_train_opening"]
+      }
+    }
+  ],
+  "random_events": [
+    {
+      "id": "economic_boom",
+      "name": "Economic Boom",
+      "japanese_name": "好景気",
+      "category": "economic",
+      "probability": 0.15,
+      "description": "予期しない好景気が到来。",
+      "effects": {
+        "economic": {
+          "growth_bonus": 1.3,
+          "duration_months": 12
+        }
+      }
+    },
+    {
+      "id": "labor_strike",
+      "name": "Labor Strike",
+      "japanese_name": "労働争議",
+      "category": "social",
+      "probability": 0.08,
+      "description": "労働者のストライキが発生。",
+      "effects": {
+        "economic": {
+          "production_penalty": 0.7,
+          "duration_months": 3
+        },
+        "population": {
+          "happiness_penalty": -0.2
+        }
+      }
+    },
+    {
+      "id": "technological_breakthrough",
+      "name": "Technological Breakthrough",
+      "japanese_name": "技術革新",
+      "category": "technology",
+      "probability": 0.1,
+      "description": "画期的な技術革新が発生。",
+      "effects": {
+        "technology": {
+          "research_bonus": 1.5,
+          "unlock_chance": 0.3
+        }
+      }
+    }
+  ]
+}
