@@ -107,7 +107,7 @@ python main.py --debug
 ConcLand/
 ├── main.py                           # メイン実行ファイル
 ├── launch_with_enhancements.py      # 拡張ランチャー
-├── concland_mini.py                 # メインゲームロジック
+├── concland.py                      # メインゲームロジック
 ├── enhanced_title_menu.py           # 改善版タイトルメニュー
 ├── ui_enhancements.py               # UI強化システム
 ├── new_game_systems.py              # 新しいゲームシステム

@@ -71,14 +71,14 @@ def main():
     try:
         if args.mode == "original":
             print("📄 オリジナル版を起動中...")
-            from concland_mini import ConcLandMini
+            from concland import ConcLandMini
             game = ConcLandMini()
             
         elif args.mode == "modular":
             print("🔧 モジュラー版を起動中...")
             # モジュラー版は後で実装予定
             print("⚠️ モジュラー版は開発中です。オリジナル版を実行します。")
-            from concland_mini import ConcLandMini
+            from concland import ConcLandMini
             game = ConcLandMini()
             
             # デバッグモードの設定

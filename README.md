@@ -106,7 +106,7 @@ Press **H** during gameplay to show the simplified controls guide at any time. A
 ConcLand/
 ├── main.py                           # Main entry point
 ├── launch_with_enhancements.py      # Enhanced launcher
-├── concland_mini.py                 # Core game logic
+├── concland.py                      # Core game logic
 ├── enhanced_title_menu.py           # Enhanced title menu
 ├── ui_enhancements.py               # UI enhancement system
 ├── new_game_systems.py              # New game systems
