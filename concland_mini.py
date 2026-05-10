@@ -319,6 +319,14 @@ class ConcLandMini:
         self.show_balance_graph = True  # Show balance graph by default
 
         # ========================================
+        # 簡素化されたヘルプシステム
+        # Simplified help system
+        # ========================================
+        self.help_visible = False  # ヘルプ表示フラグ / Help visibility flag
+        self.help_timer = 0  # ヘルプ自動消去タイマー / Help auto-hide timer
+        self.show_startup_help = True  # 起動時ヘルプ表示フラグ / Show help on startup
+
+        # ========================================
         # 高度システムの初期化（統合準備）
         # Advanced systems initialization (integration ready)
         # ========================================
@@ -347,11 +355,48 @@ class ConcLandMini:
             print("🏙️ Loading saved city from savegame.dat...")
             self.load_city("savegame.dat")
             print("✅ City loaded successfully!")
+        else:
+            # Show startup tutorial for new players
+            self._show_startup_tutorial()
 
         # Start game loop (only if not using GameLauncher)
         if not skip_pyxel_init:
             pyxel.run(self.update, self.draw)
-    
+
+    def _show_startup_tutorial(self):
+        """起動時にチュートリアルを表示 / Show tutorial on startup"""
+        print("=" * 70)
+        print("🎮 ようこそ ConcLand へ！ Welcome to ConcLand!")
+        print("=" * 70)
+        print()
+        print("🎮 はじめてプレイされる方向けに、基本操作を紹介します。")
+        print()
+        print("📋 やること:")
+        print()
+        print("1. まずは道路を作りましょう")
+        print("   → R キーを押して「道路」を選択")
+        print("   → カーソルを移動して「スペース」キーで配置")
+        print()
+        print("2. 住宅を作りましょう")
+        print("   → Q キーを押して「住宅」を選択")
+        print("   → 道路に隣接する場所に「スペース」キーで配置")
+        print()
+        print("3. 発電所を建てましょう")
+        print("   → I キーを押して「発電所」を選択")
+        print("   → 資金が足りない場合は、待機してから")
+        print()
+        print("4. 時間が経つと都市が発展します")
+        print("   → 人口が増えると税収入が増えます")
+        print("   → さらに多くの施設を建てられるようになります")
+        print()
+        print("🆘 ヘルプ:")
+        print("・ゲーム中に「H」キーを押すと、いつでも操作ガイドが表示されます")
+        print("・「V」キーで表示モードを切り替えて、都市の状態を確認できます")
+        print()
+        print("✨ それでは、楽しい都市建設を！ Have fun!")
+        print("=" * 70)
+        print()
+
     def _init_world(self):
         """Initialize the game world with Voronoi-generated terrain"""
         # Check if we should load from saved terrain (prioritize 100x100 terrain)
@@ -612,6 +657,12 @@ class ConcLandMini:
             self.move_timer -= 1
             if self.move_timer == 0:
                 self.is_moving = False
+
+        # Update help timer
+        if self.help_timer > 0:
+            self.help_timer -= 1
+            if self.help_timer == 0:
+                self.help_visible = False
         
         # Handle confirmation timeout
         if self.confirm_timer > 0:
@@ -947,6 +998,13 @@ class ConcLandMini:
         # Agricultural on A key
         elif pyxel.btnp(pyxel.KEY_A):
             self.current_item = ItemMode.AGRICULTURAL
+
+        # Toggle help display with H key
+        elif pyxel.btnp(pyxel.KEY_H):
+            self.help_visible = not self.help_visible
+            if self.help_visible:
+                self.help_timer = 300  # 5秒間表示（60FPS × 5）
+            self.show_startup_help = False  # 一度操作したら起動時ヘルプは非表示
         
         # View mode toggle - add water view
         if pyxel.btnp(pyxel.KEY_V):
@@ -3588,11 +3646,14 @@ class ConcLandMini:
         # Draw UI (must be last to overlay on top)
         self._draw_ui()
 
+        # Draw simplified help overlay (on top of everything)
+        self._draw_simplified_help()
+
         # Draw advanced UI panels (if not in MAIN_GAME mode)
         if hasattr(self, 'ui_system') and self.ui_system.current_panel != UIPanel.MAIN_GAME:
             ui_data = self._prepare_ui_data()
             self.ui_system.draw(ui_data)
-    
+
     def _draw_map(self):
         """Draw the game map"""
         # Calculate visible tile range
@@ -4738,8 +4799,101 @@ class ConcLandMini:
             
             # Show percentage
             pyxel.text(bar_x + 26, y_pos, f"{value}", 7)
-    
-    
+
+    def _draw_simplified_help(self):
+        """簡素化されたオンスクリーンヘルプを描画 / Draw simplified on-screen help"""
+
+        # 初回起動時は常にヘルプを表示
+        if self.show_startup_help:
+            self.help_visible = True
+            self.help_timer = 600  # 10秒間表示（初回のみ）
+
+        if not self.help_visible:
+            return
+
+        help_width = 260
+        help_height = 200
+
+        # 背景（半透明黒）
+        overlay_x = (SCREEN_WIDTH - help_width) // 2
+        overlay_y = (SCREEN_HEIGHT - help_height) // 2
+
+        # 外枠
+        pyxel.rect(overlay_x, overlay_y, help_width, help_height, 0)
+        pyxel.rectb(overlay_x, overlay_y, help_width, help_height, 7)
+
+        # タイトル
+        title = "操作ガイド - Hで閉じる"
+        title_x = (SCREEN_WIDTH - len(title) * 4) // 2
+        pyxel.text(title_x, overlay_y + 8, title, 7)
+
+        # 内容
+        y = overlay_y + 25
+
+        # 移動
+        pyxel.text(overlay_x + 10, y, "【移動】", 6)
+        y += 12
+        pyxel.text(overlay_x + 15, y, "矢印キー または K/J/H/L", 7)
+        y += 18
+
+        # アクション
+        pyxel.text(overlay_x + 10, y, "【アクション】", 6)
+        y += 12
+        pyxel.text(overlay_x + 15, y, "スペース: 建物配置", 7)
+        y += 10
+        pyxel.text(overlay_x + 15, y, "X: 削除", 7)
+        y += 18
+
+        # ツール選択（簡易版）
+        pyxel.text(overlay_x + 10, y, "【ツール選択】", 6)
+        y += 12
+
+        # ItemModeから主要なツールを表示
+        tools = [
+            ("Q", "住宅", ItemMode.RESIDENTIAL),
+            ("W", "商業", ItemMode.COMMERCIAL),
+            ("E", "工業", ItemMode.INDUSTRIAL),
+            ("R", "道路", ItemMode.ROAD),
+            ("T", "鉄道", ItemMode.RAIL),
+            ("Y", "公園", ItemMode.PARK),
+            ("U", "電線", ItemMode.WIRE),
+            ("I", "発電所", ItemMode.COAL_PLANT),
+            ("P", "公共", ItemMode.POLICE),
+            ("A", "農業", ItemMode.AGRICULTURAL),
+            ("\\", "削除", ItemMode.BULLDOZE),
+        ]
+
+        for key, name, item in tools:
+            is_selected = (self.current_item == item)
+
+            # 選択中のツールを強調
+            if is_selected:
+                pyxel.rect(overlay_x + 8, y - 2, help_width - 16, 10, 6)
+
+            # キーとツール名
+            pyxel.text(overlay_x + 12, y, key, 10 if is_selected else 7)
+            pyxel.text(overlay_x + 30, y, name, 10 if is_selected else 6)
+
+            y += 11
+
+        y += 10
+
+        # その他機能
+        pyxel.text(overlay_x + 10, y, "【その他】", 6)
+        y += 12
+        pyxel.text(overlay_x + 15, y, "V: 表示切替", 7)
+        y += 10
+        pyxel.text(overlay_x + 15, y, "S/E/T/D/P: 詳細UI", 7)
+        y += 10
+        pyxel.text(overlay_x + 15, y, f"資金: ¥{self.funds:,}", 11)
+
+        # 終了方法
+        y += 15
+        pyxel.text(overlay_x + 10, y, "【終了】", 6)
+        y += 10
+        pyxel.text(overlay_x + 15, y, "H キーで閉じる", 7)
+
+
     def _draw_ui(self):
         """Draw the UI overlay"""
         # Draw item panel at top
