@@ -1,12 +1,13 @@
-# 🏙️ ConcLand - シティシミュレーション
+# ConcLand
 
-ConcLandは、オリジナルのSimCity (1989)にインスパイアされたミニマルなシティシミュレーションゲームです。
+ConcLandは、ミニマルなシティシミュレーションゲームです。
 Pyxelゲームエンジンを使用してPythonで実装されています。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Page Actions](https://img.shields.io/badge/Page%20Actions-Auto%20Deploy-brightgreen.svg)](https://kurogedelic.github.io/ConcLand/)
 
-## 🚀 クイックスタート
+## クイックスタート
 
 ### 必要な環境
 - Python 3.8以上
@@ -33,12 +34,12 @@ python main.py --debug
 ```
 
 **新しい機能（拡張版のみ）**:
-- 🎨 改善されたUI（通知、ツールチップ、フィードバック）
-- 🏛️ 新しいゲームシステム（水道、地下、犯罪、火災、称号）
-- 🔧 詳細なデバッグモード（CLI、LLM出力）
-- 🎵 BGM/SFXシステム（プレースホルダー実装）
+- 改善されたUI（通知、ツールチップ、フィードバック）
+- 新しいゲームシステム（水道、地下、犯罪、火災、称号）
+- 詳細なデバッグモード（CLI、LLM出力）
+- BGM/SFXシステム（プレースホルダー実装）
 
-## 🎮 ゲームの操作
+## ゲームの操作
 
 ### 基本操作
 - **矢印キー**: カーソル移動（K/J/H/Lでも可能）
@@ -83,7 +84,7 @@ python main.py --debug
 ### ヘルプシステム
 ゲーム中に「H」キーを押すと、いつでも簡素化された操作ガイドが表示されます。初回起動時には自動的にチュートリアルが表示されます。
 
-## 🏗️ ゲームシステム
+## ゲームシステム
 
 ### RCIゾーニング
 - **Residential (住宅)**: 人口を提供
@@ -100,7 +101,7 @@ python main.py --debug
 - **地価**: 汚染、公園、商業施設からの距離で決定
 - **成長**: RCI需要バランスに基づく自動発展
 
-## 📁 プロジェクト構造
+## プロジェクト構造
 
 ```
 ConcLand/
@@ -123,7 +124,7 @@ ConcLand/
 └── .github/workflows/               # CI/CDワークフロー
 ```
 
-## 🔧 開発者向け
+## 開発者向け
 
 ### 新しいシステム（2026-05-10実装）
 - **ui_enhancements.py** - UI強化（通知、ツールチップ、フィードバック）
@@ -156,23 +157,24 @@ python integration_test.py
 python misc/tools/organize_project_v2.py --mode analyze
 ```
 
-## 📚 ドキュメント
+## ドキュメント
 
 - **[README.md](README.md)** - English version
 - **[SIMPLIFIED_CONTROLS_GUIDE_EN.md](docs/SIMPLIFIED_CONTROLS_GUIDE_EN.md)** - Detailed controls guide (English)
 - **[SIMPLIFIED_CONTROLS_GUIDE_JA.md](docs/SIMPLIFIED_CONTROLS_GUIDE_JA.md)** - 詳細な操作ガイド（日本語）
 - **[docs/](docs/)** - 追加のドキュメント
 
-## 📝 ライセンス
+## ライセンス
 
 本プロジェクトはオープンソースであり、[MIT License](LICENSE)の下で利用可能です。
 
 Copyright (c) 2026 Leo Kuroshita (@kurogedelic)
 
-## 🤝 貢献
+## 貢献
 
 バグ報告や機能提案を歓迎します！
 
 ---
 
-🎮 **楽しい都市建設を！**
+**Webでプレイ**: [https://kurogedelic.github.io/ConcLand/](https://kurogedelic.github.io/ConcLand/)
+

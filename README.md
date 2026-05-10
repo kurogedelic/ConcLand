@@ -1,11 +1,12 @@
-# 🏙️ ConcLand - City Simulation Game
+# ConcLand
 
-ConcLand is a minimal city simulation game inspired by the original SimCity (1989), implemented in Python using the Pyxel game engine.
+ConcLand is a minimal city simulation game implemented in Python using the Pyxel game engine.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Page Actions](https://img.shields.io/badge/Page%20Actions-Auto%20Deploy-brightgreen.svg)](https://kurogedelic.github.io/ConcLand/)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Requirements
 - Python 3.8 or higher
@@ -32,12 +33,12 @@ python main.py --debug
 ```
 
 **New Features (Enhanced Version Only)**:
-- 🎨 Enhanced UI (notifications, tooltips, feedback)
-- 🏛️ New Game Systems (water supply, underground, crime, fire, city status)
-- 🔧 Verbose Debug Mode (CLI, LLM output)
-- 🎵 BGM/SFX System (placeholder implementation)
+- Enhanced UI (notifications, tooltips, feedback)
+- New Game Systems (water supply, underground, crime, fire, city status)
+- Verbose Debug Mode (CLI, LLM output)
+- BGM/SFX System (placeholder implementation)
 
-## 🎮 Game Controls
+## Game Controls
 
 ### Basic Controls
 - **Arrow Keys**: Cursor movement (K/J/H/L also works)
@@ -82,7 +83,7 @@ python main.py --debug
 ### Help System
 Press **H** during gameplay to show the simplified controls guide at any time. A tutorial is automatically displayed on first launch.
 
-## 🏗️ Game Systems
+## Game Systems
 
 ### RCI Zoning
 - **Residential**: Provides population
@@ -99,7 +100,7 @@ Press **H** during gameplay to show the simplified controls guide at any time. A
 - **Land Value**: Determined by pollution, parks, distance to commercial
 - **Growth**: Automatic development based on RCI demand balance
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ConcLand/
@@ -122,7 +123,7 @@ ConcLand/
 └── .github/workflows/               # CI/CD workflows
 ```
 
-## 🔧 For Developers
+## For Developers
 
 ### New Systems (Implemented 2026-05-10)
 - **ui_enhancements.py** - UI enhancements (notifications, tooltips, feedback)
@@ -155,23 +156,24 @@ python integration_test.py
 python misc/tools/organize_project_v2.py --mode analyze
 ```
 
-## 📚 Documentation
+## Documentation
 
 - **[README_JA.md](README_JA.md)** - Japanese version
 - **[SIMPLIFIED_CONTROLS_GUIDE_EN.md](docs/SIMPLIFIED_CONTROLS_GUIDE_EN.md)** - Detailed controls guide (English)
 - **[SIMPLIFIED_CONTROLS_GUIDE_JA.md](docs/SIMPLIFIED_CONTROLS_GUIDE_JA.md)** - 詳細な操作ガイド（日本語）
 - **[docs/](docs/)** - Additional documentation
 
-## 📝 License
+## License
 
 This project is open source and available under the [MIT License](LICENSE).
 
 Copyright (c) 2026 Leo Kuroshita (@kurogedelic)
 
-## 🤝 Contributing
+## Contributing
 
 Bug reports and feature requests are welcome!
 
 ---
 
-🎮 **Happy City Building!**
+**Play on Web**: [https://kurogedelic.github.io/ConcLand/](https://kurogedelic.github.io/ConcLand/)
+

@@ -1,6 +1,6 @@
 # Simplified Controls Guide for ConcLand
 
-## 🎮 Basic Controls
+##  Basic Controls
 
 ### Cursor Movement
 - **Arrow Keys**: ⬆️⬇️⬅️➡️
@@ -13,7 +13,7 @@
 
 ---
 
-## 🏗️ Tool Selection (Intuitive QWERTY Layout)
+##  Tool Selection (Intuitive QWERTY Layout)
 
 ### Basic Zones
 | Key | Tool | Description |
@@ -45,7 +45,7 @@
 
 ---
 
-## 💡 Useful Features
+##  Useful Features
 
 ### View Modes
 - **V Key**: Cycle view modes
@@ -66,7 +66,7 @@
 
 ---
 
-## 🚀 First Time Guide
+##  First Time Guide
 
 ### Step 1: Build Roads
 1. Press **R Key** to select "Road"
@@ -90,7 +90,7 @@
 
 ---
 
-## 🆘 Troubleshooting
+##  Troubleshooting
 
 ### Insufficient Funds
 - **Solution**: Wait for residential growth to increase tax revenue
@@ -109,7 +109,7 @@
 
 ---
 
-## 📝 Complete Shortcut List
+##  Complete Shortcut List
 
 ### Gameplay
 | Key | Function |
@@ -156,7 +156,7 @@
 
 ---
 
-## 🎓 Advanced Tips
+##  Advanced Tips
 
 ### Efficient City Planning
 1. Balance of **Residential → Commercial → Industrial** is important

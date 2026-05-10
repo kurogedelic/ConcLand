@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-ConcLand is a minimal city simulation game inspired by the original SimCity (1989), implemented in Python using the Pyxel game engine. The game features Game Boy-style resolution (320x288) with authentic SimCity mechanics including RCI zoning, pollution simulation, power grid management, and advanced systems for traffic, economy, disasters, and more.
+ConcLand is a minimal city simulation game implemented in Python using the Pyxel game engine. The game features Game Boy-style resolution (320x288) with city simulation mechanics including RCI zoning, pollution simulation, power grid management, and advanced systems for traffic, economy, disasters, and more.
 
 ## Dependencies
 
