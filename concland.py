@@ -324,7 +324,7 @@ class ConcLandMini:
         # ========================================
         self.help_visible = False  # ヘルプ表示フラグ / Help visibility flag
         self.help_timer = 0  # ヘルプ自動消去タイマー / Help auto-hide timer
-        self.show_startup_help = True  # 起動時ヘルプ表示フラグ / Show help on startup
+        self.show_startup_help = False  # 起動時ヘルプ表示フラグ / Show help on startup (Disabled)
 
         # ========================================
         # 高度システムの初期化（統合準備）
