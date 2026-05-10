@@ -743,9 +743,9 @@ class ConcLandMini:
                     print(f"   Already merged: {self.sim_data[y][x].merged_size > 1}")
             else:
                 print(f"❌ Cannot merge {cell_type.name} - not RCI zone")
-        
-        # Save with confirmation (N key, changed from M)
-        if pyxel.btnp(pyxel.KEY_N):
+
+        # Save with confirmation (O key)
+        if pyxel.btnp(pyxel.KEY_O):
             if self.save_confirm:
                 # Second press - execute save
                 self.save_city("savegame.dat")
@@ -755,11 +755,11 @@ class ConcLandMini:
                 # First press - show confirmation
                 self.save_confirm = True
                 self.confirm_timer = 120  # 2 seconds at 60 FPS
-                self.show_message = "もう一度Mキーでセーブ確定 / Press M again to save"
+                self.show_message = "Press O again to save / Oキーでもう一度でセーブ"
                 self.message_timer = 120
-        
-        # Load with confirmation (N key)
-        if pyxel.btnp(pyxel.KEY_N):
+
+        # Load with confirmation (I key)
+        elif pyxel.btnp(pyxel.KEY_I):
             if self.load_confirm:
                 # Second press - execute load
                 self.load_city("savegame.dat")
@@ -769,7 +769,7 @@ class ConcLandMini:
                 # First press - show confirmation
                 self.load_confirm = True
                 self.confirm_timer = 120  # 2 seconds at 60 FPS
-                self.show_message = "もう一度Nキーでロード確定 / Press N again to load"
+                self.show_message = "Press I again to load / Iキーでもう一度でロード"
                 self.message_timer = 120
         
         # Terrain save function removed (G key now used for middle park)
@@ -1066,15 +1066,17 @@ class ConcLandMini:
         
         # Item selection with QWERTY keys
         # Top row - Basic zones and infrastructure
+        # Item selection with number keys (1-9, 0, -, =)
+        # These work only in GAME focus mode
         if pyxel.btnp(pyxel.KEY_1):
             self.current_item = ItemMode.RESIDENTIAL
         elif pyxel.btnp(pyxel.KEY_2):
             self.current_item = ItemMode.COMMERCIAL
-        elif pyxel.btnp(pyxel.KEY_F2):
+        elif pyxel.btnp(pyxel.KEY_3):
             self.current_item = ItemMode.INDUSTRIAL
         elif pyxel.btnp(pyxel.KEY_4):
             self.current_item = ItemMode.ROAD
-        elif pyxel.btnp(pyxel.KEY_F3):
+        elif pyxel.btnp(pyxel.KEY_5):
             # Cycle through rail and station
             self._cycle_item('rail')
         elif pyxel.btnp(pyxel.KEY_6):
@@ -1088,20 +1090,14 @@ class ConcLandMini:
         elif pyxel.btnp(pyxel.KEY_9):
             # Cycle through port facilities
             self._cycle_item('port')
-        elif pyxel.btnp(pyxel.KEY_F5):
+        elif pyxel.btnp(pyxel.KEY_0):
             # Cycle through public services
             self._cycle_item('public')
-        elif pyxel.btnp(pyxel.KEY_8):
-            # Cycle through special facilities
-            self._cycle_item('special')
-        elif pyxel.btnp(pyxel.KEY_9):
-            # Cycle through water facilities
-            self._cycle_item('water')
-        # Bulldozer on backslash
-        elif pyxel.btnp(pyxel.KEY_BACKSLASH):
-            self.current_item = ItemMode.BULLDOZE
-        # Agricultural on A key
         elif pyxel.btnp(pyxel.KEY_MINUS):
+            # Bulldozer
+            self.current_item = ItemMode.BULLDOZE
+        elif pyxel.btnp(pyxel.KEY_EQUALS):
+            # Agricultural
             self.current_item = ItemMode.AGRICULTURAL
 
         # Toggle help display with H key
@@ -1111,12 +1107,10 @@ class ConcLandMini:
                 self.help_timer = 300  # 5秒間表示（60FPS × 5）
             self.show_startup_help = False  # 一度操作したら起動時ヘルプは非表示
         
-        # View mode toggle - add water view
-        if pyxel.btnp(pyxel.KEY_V):
-            self.view_mode = (self.view_mode + 1) % 6  # 6 view modes now (normal, pollution, land_value, power, traffic, water)
-        
-        # Toggle minimap visibility with TAB key
-        if pyxel.btnp(pyxel.KEY_TAB):
+        # View mode toggle removed - now handled by focus system (VIEW_MODE focus + Up/Down arrows)
+
+        # Toggle minimap visibility with M key
+        if pyxel.btnp(pyxel.KEY_M):
             self.always_show_minimap = not self.always_show_minimap
         
         # Toggle balance graph display
