@@ -358,6 +358,7 @@ class ConcLandMini:
         else:
             # Show startup tutorial for new players
             # self._show_startup_tutorial()  # Disabled - tutorial removed
+            pass  # Tutorial disabled
 
         # Start game loop (only if not using GameLauncher)
         if not skip_pyxel_init:
