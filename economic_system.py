@@ -1,5 +1,5 @@
 """
-Economic System Integration for ConcLand Mini
+Economic System Integration for ConcLand
 Integrates resource management with the main game simulation
 """
 import json
@@ -7,7 +7,27 @@ import random
 from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass
 from collections import defaultdict
-from misc.systems.economy.resource_manager import ResourceManager
+
+
+class ResourceManager:
+    """Simple resource manager for city economy"""
+
+    def __init__(self):
+        self.resources = {
+            "money": 10000,
+            "population": 0,
+            "jobs": 0,
+            "goods": 0
+        }
+
+    def get_resource(self, name: str) -> int:
+        return self.resources.get(name, 0)
+
+    def set_resource(self, name: str, value: int):
+        self.resources[name] = max(0, value)
+
+    def change_resource(self, name: str, amount: int):
+        self.resources[name] = max(0, self.resources.get(name, 0) + amount)
 
 @dataclass
 class EconomicPolicy:
