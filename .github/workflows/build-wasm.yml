@@ -21,65 +21,149 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Pyxel
+      - name: Create index.html with Pyxel Launcher Link
         run: |
-          pip install pyxel
+          # Create index.html that redirects to Pyxel Web Launcher
+          cat > index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>ConcLand - Minimal City Simulation</title>
+            <style>
+              body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                margin: 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 20px;
+              }
+              .container {
+                text-align: center;
+                padding: 3rem;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 20px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                max-width: 600px;
+              }
+              h1 {
+                font-size: 3.5rem;
+                margin-bottom: 0.5rem;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+              }
+              .subtitle {
+                font-size: 1.3rem;
+                margin-bottom: 2rem;
+                opacity: 0.9;
+              }
+              .play-btn {
+                display: inline-block;
+                padding: 1.2rem 3rem;
+                background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+                color: white;
+                text-decoration: none;
+                border-radius: 50px;
+                font-weight: bold;
+                font-size: 1.3rem;
+                transition: all 0.3s;
+                margin: 1rem;
+                box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+              }
+              .play-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+              }
+              .github-btn {
+                display: inline-block;
+                padding: 1rem 2rem;
+                background: rgba(255, 255, 255, 0.2);
+                color: white;
+                text-decoration: none;
+                border-radius: 50px;
+                font-weight: bold;
+                transition: all 0.3s;
+                margin: 1rem;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+              }
+              .github-btn:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: translateY(-2px);
+              }
+              .info {
+                margin-top: 2.5rem;
+                padding: 1.5rem;
+                background: rgba(0,0,0,0.2);
+                border-radius: 15px;
+                font-size: 0.95rem;
+                line-height: 1.6;
+              }
+              .info h3 {
+                margin-top: 0;
+                margin-bottom: 1rem;
+              }
+              .info ul {
+                text-align: left;
+                padding-left: 20px;
+              }
+              .info li {
+                margin: 0.5rem 0;
+              }
+              .features {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+                margin-top: 1.5rem;
+              }
+              .feature {
+                background: rgba(255, 255, 255, 0.1);
+                padding: 0.8rem 1.5rem;
+                border-radius: 20px;
+                font-size: 0.9rem;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>ConcLand</h1>
+              <p class="subtitle">Minimal City Simulation Game</p>
 
-      - name: Prepare Python Files for Packaging
-        run: |
-          # Create a temporary directory for the web package
-          mkdir -p web_package
+              <a href="https://kitao.github.io/pyxel/wasm/launcher/?run=kurogedelic.ConcLand.concland_mini" class="play-btn" target="_blank">
+                Play Now
+              </a>
 
-          # Copy only ESSENTIAL files for the game to run
-          # Main game file
-          cp concland_mini.py web_package/ConcLand.py
+              <div class="features">
+                <span class="feature">RCI Zoning</span>
+                <span class="feature">Traffic Simulation</span>
+                <span class="feature">Economy</span>
+                <span class="feature">Disasters</span>
+              </div>
 
-          # Core system modules (only game systems, no tests/docs)
-          CORE_MODULES=(
-            "image_tile_system.py"
-            "terrain_generator.py"
-            "diagonal_coastline_system.py"
-            "train_system.py"
-            "traffic_system.py"
-            "economic_system.py"
-            "disaster_system.py"
-            "advanced_ui.py"
-            "title_menu_system.py"
-            "data_visualization.py"
-            "advanced_window_system.py"
-            "visual_system.py"
-            "difficulty_system.py"
-            "goals_challenges_system.py"
-            "tutorial_system.py"
-            "rci_zone_fix.py"
-          )
+              <div class="info">
+                <h3>About ConcLand</h3>
+                <p>
+                  A minimal city simulation game inspired by classic city builders.
+                  Build and manage your own city with residential, commercial, and industrial zones.
+                </p>
+                <p>
+                  <strong>Controls:</strong> Arrow keys to move, Space to build, H for help
+                </p>
+              </div>
 
-          for module in "${CORE_MODULES[@]}"; do
-            if [ -f "$module" ]; then
-              cp "$module" web_package/
-            fi
-          done
-
-          # Copy assets
-          cp -r assets web_package/
-
-          # Copy config
-          cp -r config web_package/
-
-          # Create data directory structure
-          mkdir -p web_package/data/saves
-
-          # List files for debugging
-          echo "Files in web_package:"
-          ls -la web_package/
-          echo ""
-          echo "Python files:"
-          ls -la web_package/*.py 2>/dev/null | wc -l
+              <a href="https://github.com/kurogedelic/ConcLand" class="github-btn" target="_blank">
+                View on GitHub
+              </a>
+            </div>
+          </body>
+          </html>
+          EOF
 
       - name: Create Pyxel App Package
         run: |
