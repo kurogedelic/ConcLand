@@ -650,7 +650,7 @@ class ConcLandMini:
     def update(self):
         """Main game update loop"""
         # Qキーでの終了を無効化（誤操作防止）
-        # if pyxel.btnp(pyxel.KEY_Q):
+        # if pyxel.btnp(pyxel.KEY_1):
         #     pyxel.quit()
         
         # Update minimap display timer
@@ -855,23 +855,23 @@ class ConcLandMini:
         # Handle UI system shortcuts first
         if hasattr(self, 'ui_system'):
             # Panel switching shortcuts
-            if pyxel.btnp(pyxel.KEY_S):
+            if pyxel.btnp(pyxel.KEY_F1):
                 self.ui_system.set_panel(UIPanel.STATISTICS)
                 self.ui_data_needs_update = True
                 return  # Skip other input when in UI panel
-            elif pyxel.btnp(pyxel.KEY_E):
+            elif pyxel.btnp(pyxel.KEY_F2):
                 self.ui_system.set_panel(UIPanel.ECONOMY)
                 self.ui_data_needs_update = True
                 return
-            elif pyxel.btnp(pyxel.KEY_T):
+            elif pyxel.btnp(pyxel.KEY_F3):
                 self.ui_system.set_panel(UIPanel.TRAFFIC)
                 self.ui_data_needs_update = True
                 return
-            elif pyxel.btnp(pyxel.KEY_D):
+            elif pyxel.btnp(pyxel.KEY_F4):
                 self.ui_system.set_panel(UIPanel.DISASTERS)
                 self.ui_data_needs_update = True
                 return
-            elif pyxel.btnp(pyxel.KEY_P):
+            elif pyxel.btnp(pyxel.KEY_F5):
                 self.ui_system.set_panel(UIPanel.POLICIES)
                 self.ui_data_needs_update = True
                 return
@@ -909,12 +909,12 @@ class ConcLandMini:
             # Single row palette cursor movement
             total_items = 11  # Total number of items
             
-            if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_H) or pyxel.btn(pyxel.KEY_A):
+            if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_A):
                 if self.key_repeat_timer <= 0:
                     if self.palette_cursor > 0:
                         self.palette_cursor -= 1
                     moved = True
-            elif pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_L) or pyxel.btn(pyxel.KEY_D):
+            elif pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
                 if self.key_repeat_timer <= 0:
                     if self.palette_cursor < total_items - 1:
                         self.palette_cursor += 1
@@ -937,22 +937,22 @@ class ConcLandMini:
                 self.palette_mode = False
         else:
             # Normal map cursor movement
-            # Horizontal movement (Arrow keys, Vim keys, WASD)
-            if (pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_H) or pyxel.btn(pyxel.KEY_A)) and self.cursor_x > 0:
+            # Horizontal movement (Arrow keys, WASD)
+            if (pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_A)) and self.cursor_x > 0:
                 if self.key_repeat_timer <= 0:
                     self.cursor_x -= 1
                     moved = True
-            elif (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_L) or pyxel.btn(pyxel.KEY_D)) and self.cursor_x < MAP_SIZE - 1:
+            elif (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D)) and self.cursor_x < MAP_SIZE - 1:
                 if self.key_repeat_timer <= 0:
                     self.cursor_x += 1
                     moved = True
 
-            # Vertical movement (Arrow keys, Vim keys, WASD)
-            if (pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_K) or pyxel.btn(pyxel.KEY_W)) and self.cursor_y > 0:
+            # Vertical movement (Arrow keys, WASD)
+            if (pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_W)) and self.cursor_y > 0:
                 if self.key_repeat_timer <= 0:
                     self.cursor_y -= 1
                     moved = True
-            elif (pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_J) or pyxel.btn(pyxel.KEY_S)) and self.cursor_y < MAP_SIZE - 1:
+            elif (pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S)) and self.cursor_y < MAP_SIZE - 1:
                 if self.key_repeat_timer <= 0:
                     self.cursor_y += 1
                     moved = True
@@ -962,29 +962,29 @@ class ConcLandMini:
         
         # Item selection with QWERTY keys
         # Top row - Basic zones and infrastructure
-        if pyxel.btnp(pyxel.KEY_Q):
+        if pyxel.btnp(pyxel.KEY_1):
             self.current_item = ItemMode.RESIDENTIAL
-        elif pyxel.btnp(pyxel.KEY_W):
+        elif pyxel.btnp(pyxel.KEY_2):
             self.current_item = ItemMode.COMMERCIAL
-        elif pyxel.btnp(pyxel.KEY_E):
+        elif pyxel.btnp(pyxel.KEY_F2):
             self.current_item = ItemMode.INDUSTRIAL
-        elif pyxel.btnp(pyxel.KEY_R):
+        elif pyxel.btnp(pyxel.KEY_4):
             self.current_item = ItemMode.ROAD
-        elif pyxel.btnp(pyxel.KEY_T):
+        elif pyxel.btnp(pyxel.KEY_F3):
             # Cycle through rail and station
             self._cycle_item('rail')
-        elif pyxel.btnp(pyxel.KEY_Y):
+        elif pyxel.btnp(pyxel.KEY_6):
             # Cycle through park types
             self._cycle_item('park')
-        elif pyxel.btnp(pyxel.KEY_U):
+        elif pyxel.btnp(pyxel.KEY_7):
             self.current_item = ItemMode.WIRE
-        elif pyxel.btnp(pyxel.KEY_I):
+        elif pyxel.btnp(pyxel.KEY_8):
             # Cycle through power plants
             self._cycle_item('power')
-        elif pyxel.btnp(pyxel.KEY_O):
+        elif pyxel.btnp(pyxel.KEY_9):
             # Cycle through port facilities
             self._cycle_item('port')
-        elif pyxel.btnp(pyxel.KEY_P):
+        elif pyxel.btnp(pyxel.KEY_F5):
             # Cycle through public services
             self._cycle_item('public')
         elif pyxel.btnp(pyxel.KEY_8):
@@ -997,11 +997,11 @@ class ConcLandMini:
         elif pyxel.btnp(pyxel.KEY_BACKSLASH):
             self.current_item = ItemMode.BULLDOZE
         # Agricultural on A key
-        elif pyxel.btnp(pyxel.KEY_A):
+        elif pyxel.btnp(pyxel.KEY_MINUS):
             self.current_item = ItemMode.AGRICULTURAL
 
         # Toggle help display with H key
-        elif pyxel.btnp(pyxel.KEY_H):
+        elif pyxel.btnp(pyxel.KEY_SLASH):
             self.help_visible = not self.help_visible
             if self.help_visible:
                 self.help_timer = 300  # 5秒間表示（60FPS × 5）
