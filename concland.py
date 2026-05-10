@@ -364,14 +364,14 @@ class ConcLandMini:
             pyxel.run(self.update, self.draw)
 
     def _show_startup_tutorial(self):
-        """起動時にチュートリアルを表示 / Show tutorial on startup"""
+        """Show tutorial on startup"""
         print("=" * 70)
-        print("🎮 ようこそ ConcLand へ！ Welcome to ConcLand!")
+        print("Welcome to ConcLand!")
         print("=" * 70)
         print()
-        print("🎮 はじめてプレイされる方向けに、基本操作を紹介します。")
+        print("Here's a quick introduction to the basic controls.")
         print()
-        print("📋 やること:")
+        print("Getting Started:")
         print()
         print("1. まずは道路を作りましょう")
         print("   → R キーを押して「道路」を選択")

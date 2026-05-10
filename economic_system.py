@@ -19,6 +19,8 @@ class ResourceManager:
             "jobs": 0,
             "goods": 0
         }
+        self.production_rates = {k: 0.0 for k in self.resources.keys()}
+        self.consumption_rates = {k: 0.0 for k in self.resources.keys()}
 
     def get_resource(self, name: str) -> int:
         return self.resources.get(name, 0)
@@ -28,6 +30,56 @@ class ResourceManager:
 
     def change_resource(self, name: str, amount: int):
         self.resources[name] = max(0, self.resources.get(name, 0) + amount)
+
+    def update(self, population, buildings, current_era, current_season):
+        """Update resource production and consumption"""
+        # Simple implementation
+        self.resources["population"] = population
+        self.resources["jobs"] = min(population, int(population * 0.8))
+        self.production_rates["goods"] = population * 0.1
+        self.consumption_rates["goods"] = population * 0.08
+
+    def get_production_rate(self, res_id):
+        """Get production rate for a resource"""
+        return self.production_rates.get(res_id, 0.0)
+
+    def get_consumption_rate(self, res_id):
+        """Get consumption rate for a resource"""
+        return self.consumption_rates.get(res_id, 0.0)
+
+    def get_net_rate(self, resource_id):
+        """Get net production rate (production - consumption)"""
+        return self.production_rates.get(resource_id, 0.0) - self.consumption_rates.get(resource_id, 0.0)
+
+    def sell_to_market(self, resource_id, amount):
+        """Sell resources and return money earned"""
+        price = random.randint(5, 15)
+        earnings = int(amount * price)
+        self.resources["money"] = self.resources.get("money", 0) + earnings
+        return earnings
+
+    def get_resource_summary(self):
+        """Get summary of all resources"""
+        return {
+            "resources": self.resources.copy(),
+            "production": self.production_rates.copy(),
+            "consumption": self.consumption_rates.copy()
+        }
+
+    def export_state(self):
+        """Export resource manager state"""
+        return {
+            "resources": self.resources,
+            "production_rates": self.production_rates,
+            "consumption_rates": self.consumption_rates
+        }
+
+    def import_state(self, data):
+        """Import resource manager state"""
+        if isinstance(data, dict):
+            self.resources.update(data.get("resources", {}))
+            self.production_rates.update(data.get("production_rates", {}))
+            self.consumption_rates.update(data.get("consumption_rates", {}))
 
 @dataclass
 class EconomicPolicy:
