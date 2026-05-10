@@ -1,168 +1,177 @@
-# 🏙️ ConcLand - シティシミュレーション
+# 🏙️ ConcLand - City Simulation Game
 
-ConcLandは、オリジナルのSimCity (1989)にインスパイアされたミニマルなシティシミュレーションゲームです。
-Pyxelゲームエンジンを使用してPythonで実装されています。
+ConcLand is a minimal city simulation game inspired by the original SimCity (1989), implemented in Python using the Pyxel game engine.
 
-## 🚀 クイックスタート
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 
-### 必要な環境
-- Python 3.8以上
-- Pyxel 2.0以上
+## 🚀 Quick Start
 
-### インストール
+### Requirements
+- Python 3.8 or higher
+- Pyxel 2.0 or higher
+
+### Installation
 ```bash
 pip install pyxel
 ```
 
-### ゲームの実行
+### Running the Game
 ```bash
-# 標準実行
+# Standard execution
 python main.py
 
-# 拡張版（新システム有効）を試す
+# Enhanced launcher with new systems
 python3 launch_with_enhancements.py
 
-# オリジナル版を明示的に実行
+# Explicit mode selection
 python main.py --mode original
 
-# デバッグモードで実行
+# Debug mode
 python main.py --debug
 ```
 
-**新しい機能（拡張版のみ）**:
-- 🎨 改善されたUI（通知、ツールチップ、フィードバック）
-- 🏛️ 新しいゲームシステム（水道、地下、犯罪、火災、称号）
-- 🔧 詳細なデバッグモード（CLI、LLM出力）
-- 🎵 BGM/SFXシステム（プレースホルダー実装）
+**New Features (Enhanced Version Only)**:
+- 🎨 Enhanced UI (notifications, tooltips, feedback)
+- 🏛️ New Game Systems (water supply, underground, crime, fire, city status)
+- 🔧 Verbose Debug Mode (CLI, LLM output)
+- 🎵 BGM/SFX System (placeholder implementation)
 
-## 🎮 ゲームの操作
+## 🎮 Game Controls
 
-### 基本操作
-- **矢印キー**: カーソル移動（K/J/H/Lでも可能）
-- **スペース/Z**: 建物配置
-- **X**: 建物削除
+### Basic Controls
+- **Arrow Keys**: Cursor movement (K/J/H/L also works)
+- **Space/Z**: Place building
+- **X**: Demolish building
 
-### ツール選択（QWERTY配列で直感的に）
-- **Q**: 住宅ゾーン
-- **W**: 商業ゾーン
-- **E**: 工業ゾーン
-- **R**: 道路
-- **T**: 鉄道・駅（繰り返しで切替）
-- **Y**: 公園（繰り返しで切替）
-- **U**: 電線
-- **I**: 発電所（繰り返しで切替）
-- **O**: 港湾施設（繰り返しで切替）
-- **P**: 公共施設（繰り返しで切替）
-- **A**: 農業
-- **バックスラッシュ(\)**: ブルドーザー（削除）
+### Tool Selection (Intuitive QWERTY Layout)
+- **Q**: Residential Zone
+- **W**: Commercial Zone
+- **E**: Industrial Zone
+- **R**: Road
+- **T**: Rail/Rail Station (cycle through)
+- **Y**: Park (cycle through)
+- **U**: Wire
+- **I**: Power Plant (cycle through)
+- **O**: Port Facilities (cycle through)
+- **P**: Public Facilities (cycle through)
+- **A**: Agricultural
+- **Backslash (\)**: Bulldoze (delete)
 
-### 便利な機能
-- **H**: 操作ガイドの表示/非表示（ゲーム中いつでも確認可能）
-- **V**: 表示モード切り替え（通常/汚染/地価/電力/交通）
-- **B**: ツールパレット表示（全ツール一覧から選択）
+### Useful Features
+- **H**: Toggle controls guide (always available during gameplay)
+- **V**: Cycle view modes (normal/pollution/land value/power/traffic)
+- **B**: Tool palette (select from all tools)
 
-### 詳細UIパネル
-- **S**: 統計パネル
-- **E**: 経済パネル
-- **T**: 交通パネル
-- **D**: 災害パネル
-- **P**: 政策パネル
+### Detailed UI Panels
+- **S**: Statistics Panel
+- **E**: Economy Panel
+- **T**: Traffic Panel
+- **D**: Disaster Panel
+- **P**: Policies Panel
 
-### その他
-- **M**: RCI統合チェック
-- **N**: セーブ（2回押しで確定）
-- **ESC**: UIパネルを閉じる（ゲームは終了しません）
+### Other Controls
+- **M**: RCI merge check
+- **N**: Save (press twice to confirm)
+- **ESC**: Close UI panels (does not quit game)
 
-### ゲームの終了方法
-- ゲームを終了するには、ゲームウィンドウの閉じるボタン（×）をクリックしてください
-- ESCキーではゲームは終了しません（UIパネルを閉じるのみ）
+### How to Quit
+- Click the window close button (×) to quit
+- ESC key does not quit the game (only closes panels)
 
-### ヘルプシステム
-ゲーム中に「H」キーを押すと、いつでも簡素化された操作ガイドが表示されます。初回起動時には自動的にチュートリアルが表示されます。
+### Help System
+Press **H** during gameplay to show the simplified controls guide at any time. A tutorial is automatically displayed on first launch.
 
-## 🏗️ ゲームシステム
+## 🏗️ Game Systems
 
-### RCIゾーニング
-- **Residential (住宅)**: 人口を提供
-- **Commercial (商業)**: 雇用と税収を提供  
-- **Industrial (工業)**: 雇用を提供、汚染を発生
+### RCI Zoning
+- **Residential**: Provides population
+- **Commercial**: Provides employment and tax revenue
+- **Industrial**: Provides employment, generates pollution
 
-### インフラストラクチャ
-- **電力**: 発電所と送電線による電力供給
-- **交通**: 道路と鉄道による輸送網
-- **公共サービス**: 警察、消防、病院
+### Infrastructure
+- **Power**: Power supply via plants and transmission lines
+- **Transportation**: Road and rail networks
+- **Public Services**: Police, fire, hospitals
 
-### シミュレーション
-- **汚染**: 工業地域から拡散、地価に影響
-- **地価**: 汚染、公園、商業施設からの距離で決定
-- **成長**: RCI需要バランスに基づく自動発展
+### Simulation
+- **Pollution**: Spreads from industrial zones, affects land value
+- **Land Value**: Determined by pollution, parks, distance to commercial
+- **Growth**: Automatic development based on RCI demand balance
 
-## 📁 プロジェクト構造
+## 📁 Project Structure
 
 ```
 ConcLand/
-├── main.py                           # メイン実行ファイル
-├── launch_with_enhancements.py      # 拡張ランチャー（新システム有効）
-├── concland_mini.py                 # メインゲームロジック
-├── enhanced_title_menu.py           # 改善版タイトルメニュー
-├── ui_enhancements.py               # UI強化システム
-├── new_game_systems.py              # 新しいゲームシステム
-├── verbose_debug_system.py          # デバッグシステム
-├── bgm_sfx_system.py                # オーディオシステム
-├── config/                          # 設定ファイル
-├── assets/                          # ゲームアセット（+30個の新規タイル）
-├── data/                            # セーブデータ
-├── misc/                            # その他のツール・テスト
-├── docs/                            # ドキュメント
-├── ENHANCED_SYSTEMS_GUIDE.md        # 新システム使用ガイド
-├── INTEGRATION_GUIDE.md             # 統合ガイド
-├── PROJECT_COMPLETION_SUMMARY.md    # プロジェクト完了サマリー
-└── IMPROVEMENT_PROJECT_REPORT.md    # 詳細プロジェクト報告
+├── main.py                           # Main entry point
+├── launch_with_enhancements.py      # Enhanced launcher
+├── concland_mini.py                 # Core game logic
+├── enhanced_title_menu.py           # Enhanced title menu
+├── ui_enhancements.py               # UI enhancement system
+├── new_game_systems.py              # New game systems
+├── verbose_debug_system.py          # Debug system
+├── bgm_sfx_system.py                # Audio system
+├── config/                          # Configuration files
+├── assets/                          # Game assets (30+ new tiles)
+├── data/                            # Save data
+├── misc/                            # Tools and tests
+├── docs/                            # Documentation
+├── LICENSE                          # MIT License
+├── README.md                        # This file (English)
+├── README_JA.md                     # Japanese version
+└── .github/workflows/               # CI/CD workflows
 ```
 
-## 🔧 開発者向け
+## 🔧 For Developers
 
-### 新しいシステム（2026-05-10実装）
-- **ui_enhancements.py** - UI強化（通知、ツールチップ、フィードバック）
-- **new_game_systems.py** - 新しいゲームシステム（水道、地下、犯罪、火災、称号）
-- **verbose_debug_system.py** - 詳細なデバッグシステム（CLI、LLM出力）
-- **bgm_sfx_system.py** - オーディオシステム（BGM、SFX、アンビエント）
-- **enhanced_title_menu.py** - 改善されたタイトルメニュー
+### New Systems (Implemented 2026-05-10)
+- **ui_enhancements.py** - UI enhancements (notifications, tooltips, feedback)
+- **new_game_systems.py** - New game systems (water, underground, crime, fire, status)
+- **verbose_debug_system.py** - Verbose debug system (CLI, LLM output)
+- **bgm_sfx_system.py** - Audio system (BGM, SFX, ambient)
+- **enhanced_title_menu.py** - Enhanced title menu
 
-### 既存システム
-- `traffic_system.py` - 交通管理
-- `economic_system.py` - 経済シミュレーション
-- `disaster_system.py` - 災害システム
-- `visual_system.py` - ビジュアル強化
+### Existing Systems
+- `traffic_system.py` - Traffic management
+- `economic_system.py` - Economic simulation
+- `disaster_system.py` - Disaster system
+- `visual_system.py` - Visual enhancements
 
-### 設定とモジュール
-- `config/game_config.py` - ゲーム設定
-- `config/modules.json` - モジュール管理
-- `core/module_manager.py` - 動的モジュールローディング
+### Configuration and Modules
+- `config/game_config.py` - Game configuration
+- `config/modules.json` - Module management
+- `core/module_manager.py` - Dynamic module loading
 
-### 統合ツール
-- `launch_with_enhancements.py` - 拡張ランチャー（新システム有効）
-- `simple_integrate.py` - 簡易統合ツール
-- `ENHANCED_SYSTEMS_GUIDE.md` - 新しいシステムの使用ガイド
-- `INTEGRATION_GUIDE.md` - 統合ガイド（手動統合用）
+### Integration Tools
+- `launch_with_enhancements.py` - Enhanced launcher
+- `simple_integrate.py` - Simple integration tool
 
-### テストとツール
+### Testing
 ```bash
-# プロジェクト分析
-python misc/tools/organize_project_v2.py --mode analyze
-
-# 統合テスト
+# Integration tests
 python integration_test.py
+
+# Project analysis
+python misc/tools/organize_project_v2.py --mode analyze
 ```
 
-## 📝 ライセンス
+## 📚 Documentation
 
-このプロジェクトはオープンソースです。
+- **[README_JA.md](README_JA.md)** - Japanese version
+- **[SIMPLIFIED_CONTROLS_GUIDE_EN.md](docs/SIMPLIFIED_CONTROLS_GUIDE_EN.md)** - Detailed controls guide (English)
+- **[SIMPLIFIED_CONTROLS_GUIDE_JA.md](docs/SIMPLIFIED_CONTROLS_GUIDE_JA.md)** - 詳細な操作ガイド（日本語）
+- **[docs/](docs/)** - Additional documentation
 
-## 🤝 貢献
+## 📝 License
 
-バグ報告や機能提案を歓迎します。
+This project is open source and available under the [MIT License](LICENSE).
+
+Copyright (c) 2026 Leo Kuroshita (@kurogedelic)
+
+## 🤝 Contributing
+
+Bug reports and feature requests are welcome!
 
 ---
 
-🎮 **楽しい都市建設を！**
+🎮 **Happy City Building!**

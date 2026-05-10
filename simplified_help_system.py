@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
-ConcLand 操作簡素化パッチ
-Simplified Controls Patch for ConcLand
+ConcLand Simplified Controls Patch
 
-キー操作をわかりやすく簡素化する
+Simplifies key controls for better usability
 """
 
 # 新しいオンスクリーンなヘルプ表示
