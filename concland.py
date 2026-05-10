@@ -875,7 +875,7 @@ class ConcLandMini:
                 self.ui_system.set_panel(UIPanel.POLICIES)
                 self.ui_data_needs_update = True
                 return
-            elif pyxel.btnp(pyxel.KEY_ESCAPE):
+            elif pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_BACKSPACE) or pyxel.btnp(pyxel.KEY_X):
                 # Return to main game
                 if self.ui_system.current_panel != UIPanel.MAIN_GAME:
                     self.ui_system.set_panel(UIPanel.MAIN_GAME)
@@ -909,12 +909,12 @@ class ConcLandMini:
             # Single row palette cursor movement
             total_items = 11  # Total number of items
             
-            if pyxel.btn(pyxel.KEY_LEFT):
+            if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_H) or pyxel.btn(pyxel.KEY_A):
                 if self.key_repeat_timer <= 0:
                     if self.palette_cursor > 0:
                         self.palette_cursor -= 1
                     moved = True
-            elif pyxel.btn(pyxel.KEY_RIGHT):
+            elif pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_L) or pyxel.btn(pyxel.KEY_D):
                 if self.key_repeat_timer <= 0:
                     if self.palette_cursor < total_items - 1:
                         self.palette_cursor += 1
@@ -932,27 +932,27 @@ class ConcLandMini:
                 self.palette_mode = False  # Exit palette mode after selection
                 self.just_selected_item = True  # Set flag to prevent immediate placement
             
-            # Exit palette mode with Escape
-            if pyxel.btnp(pyxel.KEY_ESCAPE):
+            # Exit palette mode with Escape, Backspace, or X
+            if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_BACKSPACE) or pyxel.btnp(pyxel.KEY_X):
                 self.palette_mode = False
         else:
             # Normal map cursor movement
-            # Horizontal movement
-            if pyxel.btn(pyxel.KEY_LEFT) and self.cursor_x > 0:
+            # Horizontal movement (Arrow keys, Vim keys, WASD)
+            if (pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_H) or pyxel.btn(pyxel.KEY_A)) and self.cursor_x > 0:
                 if self.key_repeat_timer <= 0:
                     self.cursor_x -= 1
                     moved = True
-            elif pyxel.btn(pyxel.KEY_RIGHT) and self.cursor_x < MAP_SIZE - 1:
+            elif (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_L) or pyxel.btn(pyxel.KEY_D)) and self.cursor_x < MAP_SIZE - 1:
                 if self.key_repeat_timer <= 0:
                     self.cursor_x += 1
                     moved = True
-            
-            # Vertical movement (separate from horizontal for diagonal)
-            if pyxel.btn(pyxel.KEY_UP) and self.cursor_y > 0:
+
+            # Vertical movement (Arrow keys, Vim keys, WASD)
+            if (pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_K) or pyxel.btn(pyxel.KEY_W)) and self.cursor_y > 0:
                 if self.key_repeat_timer <= 0:
                     self.cursor_y -= 1
                     moved = True
-            elif pyxel.btn(pyxel.KEY_DOWN) and self.cursor_y < MAP_SIZE - 1:
+            elif (pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_J) or pyxel.btn(pyxel.KEY_S)) and self.cursor_y < MAP_SIZE - 1:
                 if self.key_repeat_timer <= 0:
                     self.cursor_y += 1
                     moved = True
