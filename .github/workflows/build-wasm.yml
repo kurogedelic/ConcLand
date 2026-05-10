@@ -35,14 +35,11 @@ jobs:
           # Create a temporary directory for the web package
           mkdir -p web_package
 
-          # Copy main game file
-          cp concland_mini.py web_package/
+          # Copy main game file as ConcLand.py (pyxel package expects this name)
+          cp concland_mini.py web_package/ConcLand.py
 
-          # Copy entry point
-          cp pyxel_web_entry.py web_package/main.py
-
-          # Copy all system modules
-          cp *.py web_package/ 2>/dev/null || true
+          # Copy all system modules to root
+          find . -maxdepth 1 -name "*.py" -exec cp {} web_package/ \;
 
           # Copy assets
           cp -r assets web_package/ 2>/dev/null || true
@@ -52,6 +49,9 @@ jobs:
 
           # Copy data directory structure (empty)
           mkdir -p web_package/data
+
+          # List files for debugging
+          ls -la web_package/
 
       - name: Create Pyxel App Package
         run: |
