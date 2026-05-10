@@ -1,12 +1,8 @@
-name: Build and Deploy Pyxel Web
+name: Build and Deploy to GitHub Pages
 
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'concland_mini.py'
-      - 'assets/**'
-      - '.github/workflows/build-wasm.yml'
   workflow_dispatch:
 
 permissions:
@@ -34,15 +30,137 @@ jobs:
         run: |
           pip install pyxel
 
+      - name: Prepare Python Files for Packaging
+        run: |
+          # Create a temporary directory for the web package
+          mkdir -p web_package
+
+          # Copy main game file
+          cp concland_mini.py web_package/
+
+          # Copy entry point
+          cp pyxel_web_entry.py web_package/main.py
+
+          # Copy all system modules
+          cp *.py web_package/ 2>/dev/null || true
+
+          # Copy assets
+          cp -r assets web_package/ 2>/dev/null || true
+
+          # Copy config
+          cp -r config web_package/ 2>/dev/null || true
+
+          # Copy data directory structure (empty)
+          mkdir -p web_package/data
+
       - name: Create Pyxel App Package
         run: |
-          # Create .pyxapp file
-          pyxel package concland_mini.py ConcLand
+          # Create .pyxapp file from prepared directory
+          cd web_package
+          pyxel package . ConcLand
+
+          # Move the .pyxapp file back to root
+          mv ConcLand.pyxapp ../
 
       - name: Convert to HTML
         run: |
           # Convert .pyxapp to HTML
-          pyxel app2html ConcLand.pyxapp
+          pyxel app2html ConcLand.pyxapp || echo "HTML conversion failed, will use launcher fallback"
+
+      - name: Create Fallback Index
+        if: always()
+        run: |
+          # Create index.html with Pyxel Web Launcher link
+          cat > index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>ConcLand - City Simulation Game</title>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                margin: 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+              }
+              .container {
+                text-align: center;
+                padding: 2rem;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                backdrop-filter: blur(10px);
+              }
+              h1 {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+              }
+              p {
+                font-size: 1.2rem;
+                margin-bottom: 2rem;
+              }
+              .btn {
+                display: inline-block;
+                padding: 1rem 2rem;
+                background: #4CAF50;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+                font-weight: bold;
+                transition: all 0.3s;
+                margin: 0.5rem;
+              }
+              .btn:hover {
+                background: #45a049;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+              }
+              .btn-secondary {
+                background: #2196F3;
+              }
+              .btn-secondary:hover {
+                background: #0b7dda;
+              }
+              .info {
+                margin-top: 2rem;
+                padding: 1rem;
+                background: rgba(0,0,0,0.2);
+                border-radius: 5px;
+                font-size: 0.9rem;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>ConcLand</h1>
+              <p>Minimal City Simulation Game</p>
+
+              <a href="ConcLand.html" class="btn">Play Web Version</a>
+              <a href="https://kitao.github.io/pyxel/wasm/launcher/?run=kurogedelic.ConcLand.concland_mini" class="btn btn-secondary" target="_blank">
+                Play via Pyxel Launcher
+              </a>
+
+              <div class="info">
+                <p><strong>Instructions:</strong></p>
+                <ul style="list-style: none; padding: 0;">
+                  <li>Click "Play Web Version" to play the optimized HTML version</li>
+                  <li>Or click "Play via Pyxel Launcher" for the full experience</li>
+                </ul>
+                <p style="margin-top: 1rem;">
+                  <a href="https://github.com/kurogedelic/ConcLand" style="color: #4CAF50;">View on GitHub</a>
+                </p>
+              </div>
+            </div>
+          </body>
+          </html>
+          EOF
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -50,7 +168,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./ConcLand.html
+          path: ./
+          # Upload both HTML files
 
   deploy:
     environment:
