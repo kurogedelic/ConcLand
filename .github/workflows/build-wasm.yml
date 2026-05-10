@@ -35,23 +35,51 @@ jobs:
           # Create a temporary directory for the web package
           mkdir -p web_package
 
-          # Copy main game file as ConcLand.py (pyxel package expects this name)
+          # Copy only ESSENTIAL files for the game to run
+          # Main game file
           cp concland_mini.py web_package/ConcLand.py
 
-          # Copy all system modules to root
-          find . -maxdepth 1 -name "*.py" -exec cp {} web_package/ \;
+          # Core system modules (only game systems, no tests/docs)
+          CORE_MODULES=(
+            "image_tile_system.py"
+            "terrain_generator.py"
+            "diagonal_coastline_system.py"
+            "train_system.py"
+            "traffic_system.py"
+            "economic_system.py"
+            "disaster_system.py"
+            "advanced_ui.py"
+            "title_menu_system.py"
+            "data_visualization.py"
+            "advanced_window_system.py"
+            "visual_system.py"
+            "difficulty_system.py"
+            "goals_challenges_system.py"
+            "tutorial_system.py"
+            "rci_zone_fix.py"
+          )
+
+          for module in "${CORE_MODULES[@]}"; do
+            if [ -f "$module" ]; then
+              cp "$module" web_package/
+            fi
+          done
 
           # Copy assets
-          cp -r assets web_package/ 2>/dev/null || true
+          cp -r assets web_package/
 
           # Copy config
-          cp -r config web_package/ 2>/dev/null || true
+          cp -r config web_package/
 
-          # Copy data directory structure (empty)
-          mkdir -p web_package/data
+          # Create data directory structure
+          mkdir -p web_package/data/saves
 
           # List files for debugging
+          echo "Files in web_package:"
           ls -la web_package/
+          echo ""
+          echo "Python files:"
+          ls -la web_package/*.py 2>/dev/null | wc -l
 
       - name: Create Pyxel App Package
         run: |
