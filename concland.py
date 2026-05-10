@@ -5161,15 +5161,11 @@ class ConcLandMini:
                 self.prev_camera_y = self.camera_y
 
 if __name__ == "__main__":
-    import sys
-
-    # Check if GameLauncher should be used
-    # Default: direct launch for now (will change to GameLauncher after testing)
-    USE_GAME_LAUNCHER = True  # Set to True to enable title menu system
-
-    if USE_GAME_LAUNCHER:
-        from title_menu_system import GameLauncher
-        launcher = GameLauncher(SCREEN_WIDTH, SCREEN_HEIGHT)
-    else:
-        # Direct launch (original behavior)
+    # Direct launch for Pyxel Web compatibility
+    # GameLauncher is disabled in browser environment
+    try:
         ConcLandMini()
+    except Exception as e:
+        print(f"Error launching game: {e}")
+        import sys
+        sys.exit(1)
