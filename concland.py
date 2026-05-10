@@ -357,7 +357,7 @@ class ConcLandMini:
             print("✅ City loaded successfully!")
         else:
             # Show startup tutorial for new players
-            self._show_startup_tutorial()
+            # self._show_startup_tutorial()  # Disabled - tutorial removed
 
         # Start game loop (only if not using GameLauncher)
         if not skip_pyxel_init:
