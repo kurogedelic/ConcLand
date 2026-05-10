@@ -13,6 +13,7 @@
         body {
             background: #000;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -32,12 +33,28 @@
             font-size: 12px;
             text-align: center;
         }
+        #key-help {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #888;
+            font-family: monospace;
+            font-size: 11px;
+            text-align: center;
+            background: rgba(0,0,0,0.7);
+            padding: 8px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
+    <div id="key-help">
+        <strong>Controls:</strong> TAB=Focus | Arrows/WASD=Move | 1-9,0,-,+=Build | F1-F5=Pipelines | O=Save | I=Load | M=Map
+    </div>
     <iframe id="game" src="ConcLand.html" width="640" height="576" tabindex="0"></iframe>
     <div id="instructions">
-        Click game to focus | Arrow keys or WASD to move | H for help
+        Click game to focus | Arrow keys or WASD to move
     </div>
     <script>
         const iframe = document.getElementById('game');
@@ -57,17 +74,38 @@
             iframe.focus();
         });
 
-        // Keep focus when pressing keys
+        // AGGRESSIVELY prevent all arrow key and space key events
+        window.addEventListener('keydown', (e) => {
+            const key = e.key;
+            // Block ALL navigation and interaction keys that should go to game
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'w', 'a', 's', 'd', 'W', 'A', 'S', 'D'].includes(key)) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+
+                // Ensure iframe is focused
+                if (!iframe.matches(':focus')) {
+                    iframe.focus();
+                }
+
+                return false;
+            }
+        }, { capture: true, passive: false });
+
+        // Also prevent keyup events
+        window.addEventListener('keyup', (e) => {
+            const key = e.key;
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(key)) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        }, { capture: true });
+
+        // Keep focus on iframe when pressing any key
         document.addEventListener('keydown', (e) => {
             if (!iframe.matches(':focus')) {
                 iframe.focus();
-            }
-        });
-
-        // Prevent arrow key scrolling
-        window.addEventListener('keydown', (e) => {
-            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
-                e.preventDefault();
             }
         });
     </script>

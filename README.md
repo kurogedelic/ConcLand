@@ -40,48 +40,43 @@ python main.py --debug
 
 ## Game Controls
 
-### Basic Controls
-- **Arrow Keys**: Cursor movement (K/J/H/L also works)
-- **Space/Z**: Place building
-- **X**: Demolish building
+### ⚠️ Browser/WASM Version Notice
+**Arrow keys may not work in the browser version. Please use WASD for cursor movement!**
+ブラウザ版では矢印キーが動作しない場合があります。カーソル移動にはWASDキーをご使用ください！
 
-### Tool Selection (Intuitive QWERTY Layout)
-- **Q**: Residential Zone
-- **W**: Commercial Zone
-- **E**: Industrial Zone
-- **R**: Road
-- **T**: Rail/Rail Station (cycle through)
-- **Y**: Park (cycle through)
-- **U**: Wire
-- **I**: Power Plant (cycle through)
-- **O**: Port Facilities (cycle through)
-- **P**: Public Facilities (cycle through)
-- **A**: Agricultural
-- **Backslash (\)**: Bulldoze (delete)
+### Basic Controls
+- **WASD**: Cursor movement (⚠️ Arrow keys may not work in browser)
+- **Space/Z**: Place building
+- **TAB**: Cycle focus states (Game → Palette → View Mode)
+- **ESC**: Return to game focus
+
+### Focus System
+The game uses a focus system to prevent key conflicts:
+- **GAME Focus**: Normal cursor movement and building placement
+- **PALETTE Focus**: Arrow keys navigate palette items (auto-selects)
+- **VIEW_MODE Focus**: Arrow keys cycle through view modes
+
+### Tool Selection (Number Keys)
+- **1**: Residential | **2**: Commercial | **3**: Industrial
+- **4**: Road | **5**: Rail (cycle) | **6**: Park (cycle)
+- **7**: Wire | **8**: Power Plants (cycle) | **9**: Ports (cycle)
+- **0**: Public Services (cycle) | **-**: Bulldozer | **=**: Agricultural
+
+### UI Panels (F-keys)
+- **F1**: Statistics Panel
+- **F2**: Economy Panel
+- **F3**: Traffic Panel
+- **F4**: Disaster Panel
+- **F5**: Policies Panel
 
 ### Useful Features
-- **H**: Toggle controls guide (always available during gameplay)
-- **V**: Cycle view modes (normal/pollution/land value/power/traffic)
-- **B**: Tool palette (select from all tools)
-
-### Detailed UI Panels
-- **S**: Statistics Panel
-- **E**: Economy Panel
-- **T**: Traffic Panel
-- **D**: Disaster Panel
-- **P**: Policies Panel
-
-### Other Controls
-- **M**: RCI merge check
-- **N**: Save (press twice to confirm)
-- **ESC**: Close UI panels (does not quit game)
-
-### How to Quit
-- Click the window close button (×) to quit
-- ESC key does not quit the game (only closes panels)
+- **M**: Toggle minimap display
+- **/**: Toggle controls guide (always available during gameplay)
+- **O**: Save city (press twice to confirm)
+- **I**: Load city (press twice to confirm)
 
 ### Help System
-Press **H** during gameplay to show the simplified controls guide at any time. A tutorial is automatically displayed on first launch.
+Press **/** during gameplay to show the simplified controls guide at any time.
 
 ## Game Systems
 
