@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConcLand - Minimal City Simulation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        iframe {
+            border: none;
+            display: block;
+        }
+        #instructions {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #666;
+            font-family: monospace;
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <iframe id="game" src="ConcLand.html" width="640" height="576" tabindex="0"></iframe>
+    <div id="instructions">
+        Click game to focus | Arrow keys or WASD to move | H for help
+    </div>
+    <script>
+        const iframe = document.getElementById('game');
+        const instructions = document.getElementById('instructions');
+
+        // Auto-focus iframe on load
+        iframe.addEventListener('load', () => {
+            iframe.focus();
+            setTimeout(() => {
+                instructions.style.opacity = '0';
+                instructions.style.transition = 'opacity 2s';
+            }, 3000);
+        });
+
+        // Focus when clicking iframe
+        iframe.addEventListener('click', () => {
+            iframe.focus();
+        });
+
+        // Keep focus when pressing keys
+        document.addEventListener('keydown', (e) => {
+            if (!iframe.matches(':focus')) {
+                iframe.focus();
+            }
+        });
+
+        // Prevent arrow key scrolling
+        window.addEventListener('keydown', (e) => {
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

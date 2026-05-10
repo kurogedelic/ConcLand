@@ -33,22 +33,73 @@
             color: white;
             margin: 1rem 0;
         }
-        .link {
+        .controls {
+            background: rgba(0,0,0,0.2);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 1.5rem;
+            text-align: left;
+        }
+        .controls h3 {
             color: #4CAF50;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        .controls ul {
+            list-style: none;
+            padding: 0;
+        }
+        .controls li {
+            color: white;
+            margin: 0.5rem 0;
+        }
+        .key {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            font-family: monospace;
             font-weight: bold;
+        }
+        .play-btn {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
             text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.3rem;
+            transition: all 0.3s;
+            margin: 1rem;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+        .play-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
         }
     </style>
-    <script>
-        // Redirect to ConcLand.html
-        window.location.href = 'ConcLand.html';
-    </script>
 </head>
 <body>
     <div class="container">
         <h1>ConcLand</h1>
-        <p>Loading game...</p>
-        <p>If not redirected automatically, <a href="ConcLand.html" class="link">click here</a></p>
+        <p>Minimal City Simulation Game</p>
+
+        <a href="play.html" class="play-btn">Play Now</a>
+
+        <div class="controls">
+            <h3>Controls</h3>
+            <ul>
+                <li><span class="key">Arrow Keys</span> or <span class="key">WASD</span> - Move cursor</li>
+                <li><span class="key">Q</span> - Residential | <span class="key">W</span> - Commercial | <span class="key">E</span> - Industrial</li>
+                <li><span class="key">R</span> - Road | <span class="key">Space</span> - Build</li>
+                <li><span class="key">H</span> - Help | <span class="key">X</span> - Close panel</li>
+            </ul>
+        </div>
+
+        <p style="margin-top: 2rem; opacity: 0.8; font-size: 0.9rem;">
+            Note: Click game window before playing
+        </p>
     </div>
 </body>
 </html>
