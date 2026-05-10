@@ -64,3 +64,5 @@ terrain_*.dat
 # Temporary files
 *.tmp
 *.bak
+ConcLand.html
+ConcLand.pyxapp

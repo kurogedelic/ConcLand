@@ -158,6 +158,46 @@ class ItemMode(Enum):
     INDUSTRIAL = 3
     ROAD = 4
     RAIL = 5
+    PARK = 6
+    WIRE = 7
+    COAL_PLANT = 8
+    NUCLEAR_PLANT = 9
+    POLICE = 10
+    AGRICULTURAL = 11
+    STATION = 12
+    FIRE = 13
+    HOSPITAL = 14
+    SCHOOL = 15
+    UNIVERSITY = 16
+    PARK_MIDDLE = 17
+    GAS_PLANT = 18
+    WIND_PLANT = 19
+    WATER_PLANT = 20
+    SEWAGE_PLANT = 21
+    PUMP = 22
+    LIBRARY = 23
+    LABORATORY = 24
+    MILITARY = 25
+    PRISON = 26
+    SHRINE = 27
+    SPACE = 28
+    SOLAR_PLANT = 29
+    OIL_PLANT = 30
+    AIRPORT = 31
+    HELIPORT = 32
+    SEAPORT = 33
+    INCINERATOR = 34
+    WASTE_FACILITY = 35
+    ONSEN = 36
+    PACHINKO = 37
+
+
+class FocusState(Enum):
+    """Focus state for UI navigation"""
+    GAME = 0      # Game cursor movement and zone placement
+    PALETTE = 1   # Palette selection
+    VIEW_MODE = 2  # View mode selection
+    RAIL = 5
     WIRE = 6
     PARK = 7
     COAL_PLANT = 8
@@ -325,6 +365,11 @@ class ConcLandMini:
         self.help_visible = False  # ヘルプ表示フラグ / Help visibility flag
         self.help_timer = 0  # ヘルプ自動消去タイマー / Help auto-hide timer
         self.show_startup_help = False  # 起動時ヘルプ表示フラグ / Show help on startup (Disabled)
+
+        # Focus system
+        self.focus_state = FocusState.GAME  # Current focus state
+        self.focus_palette_index = 0  # Current palette selection when in PALETTE focus
+        self.focus_view_index = 0  # Current view mode when in VIEW_MODE focus (0=normal, 1=pollution, 2=land_value, 3=power, 4=traffic)
 
         # ========================================
         # 高度システムの初期化（統合準備）
@@ -885,6 +930,17 @@ class ConcLandMini:
         if hasattr(self, 'ui_system') and self.ui_system.current_panel != UIPanel.MAIN_GAME:
             return
 
+        # Focus system: Tab key cycles through focus states
+        if pyxel.btnp(pyxel.KEY_TAB):
+            self.focus_state = FocusState((self.focus_state.value + 1) % 3)
+            return
+
+        # ESC key always returns to GAME focus
+        if pyxel.btnp(pyxel.KEY_ESCAPE):
+            if self.focus_state != FocusState.GAME:
+                self.focus_state = FocusState.GAME
+                return
+
         # Reduce key repeat timer
         if self.key_repeat_timer > 0:
             self.key_repeat_timer -= 1
@@ -904,58 +960,106 @@ class ConcLandMini:
                     self.palette_cursor = building_items.index(self.current_item)
         
         moved = False
-        
-        if self.palette_mode:
-            # Single row palette cursor movement
+
+        # Focus-based input handling
+        if self.focus_state == FocusState.PALETTE:
+            # PALETTE focus: Arrow keys navigate palette items
             total_items = 11  # Total number of items
-            
+
             if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_A):
                 if self.key_repeat_timer <= 0:
-                    if self.palette_cursor > 0:
-                        self.palette_cursor -= 1
+                    if self.focus_palette_index > 0:
+                        self.focus_palette_index -= 1
+                        # Auto-select the item
+                        building_items = [
+                            ItemMode.RESIDENTIAL, ItemMode.COMMERCIAL, ItemMode.INDUSTRIAL,
+                            ItemMode.ROAD, ItemMode.RAIL, ItemMode.PARK, ItemMode.WIRE,
+                            ItemMode.COAL_PLANT, ItemMode.NUCLEAR_PLANT, ItemMode.POLICE,
+                            ItemMode.BULLDOZE
+                        ]
+                        self.current_item = building_items[self.focus_palette_index]
                     moved = True
             elif pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
                 if self.key_repeat_timer <= 0:
-                    if self.palette_cursor < total_items - 1:
-                        self.palette_cursor += 1
+                    if self.focus_palette_index < total_items - 1:
+                        self.focus_palette_index += 1
+                        # Auto-select the item
+                        building_items = [
+                            ItemMode.RESIDENTIAL, ItemMode.COMMERCIAL, ItemMode.INDUSTRIAL,
+                            ItemMode.ROAD, ItemMode.RAIL, ItemMode.PARK, ItemMode.WIRE,
+                            ItemMode.COAL_PLANT, ItemMode.NUCLEAR_PLANT, ItemMode.POLICE,
+                            ItemMode.BULLDOZE
+                        ]
+                        self.current_item = building_items[self.focus_palette_index]
                     moved = True
-            
-            # Select item with Space/Z in palette mode
-            if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.KEY_Z):
-                building_items = [
-                    ItemMode.RESIDENTIAL, ItemMode.COMMERCIAL, ItemMode.INDUSTRIAL,
-                    ItemMode.ROAD, ItemMode.RAIL, ItemMode.PARK, ItemMode.WIRE,
-                    ItemMode.COAL_PLANT, ItemMode.NUCLEAR_PLANT, ItemMode.POLICE,
-                    ItemMode.BULLDOZE
-                ]
-                self.current_item = building_items[self.palette_cursor]
-                self.palette_mode = False  # Exit palette mode after selection
-                self.just_selected_item = True  # Set flag to prevent immediate placement
-            
-            # Exit palette mode with Escape, Backspace, or X
-            if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_BACKSPACE) or pyxel.btnp(pyxel.KEY_X):
-                self.palette_mode = False
-        else:
-            # Normal map cursor movement
-            # Horizontal movement (Arrow keys, WASD)
-            if (pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_A)) and self.cursor_x > 0:
-                if self.key_repeat_timer <= 0:
-                    self.cursor_x -= 1
-                    moved = True
-            elif (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D)) and self.cursor_x < MAP_SIZE - 1:
-                if self.key_repeat_timer <= 0:
-                    self.cursor_x += 1
-                    moved = True
+                # Right arrow at the last item moves to VIEW_MODE focus
+                elif self.focus_palette_index == total_items - 1:
+                    self.focus_state = FocusState.VIEW_MODE
 
-            # Vertical movement (Arrow keys, WASD)
-            if (pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_W)) and self.cursor_y > 0:
+        elif self.focus_state == FocusState.VIEW_MODE:
+            # VIEW_MODE focus: Arrow keys cycle through view modes
+            if (pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_W)) or (pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S)):
                 if self.key_repeat_timer <= 0:
-                    self.cursor_y -= 1
+                    self.focus_view_index = (self.focus_view_index + 1) % 6  # 6 view modes
+                    self.view_mode = self.focus_view_index
                     moved = True
-            elif (pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S)) and self.cursor_y < MAP_SIZE - 1:
-                if self.key_repeat_timer <= 0:
-                    self.cursor_y += 1
-                    moved = True
+            elif (pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_A)):
+                # Left arrow returns to PALETTE focus
+                self.focus_state = FocusState.PALETTE
+
+        else:  # FocusState.GAME
+            # GAME focus: Normal map cursor movement
+            if self.palette_mode:
+                # Single row palette cursor movement (legacy palette mode)
+                total_items = 11  # Total number of items
+
+                if pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_A):
+                    if self.key_repeat_timer <= 0:
+                        if self.palette_cursor > 0:
+                            self.palette_cursor -= 1
+                        moved = True
+                elif pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D):
+                    if self.key_repeat_timer <= 0:
+                        if self.palette_cursor < total_items - 1:
+                            self.palette_cursor += 1
+                        moved = True
+
+                # Select item with Space/Z in palette mode
+                if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.KEY_Z):
+                    building_items = [
+                        ItemMode.RESIDENTIAL, ItemMode.COMMERCIAL, ItemMode.INDUSTRIAL,
+                        ItemMode.ROAD, ItemMode.RAIL, ItemMode.PARK, ItemMode.WIRE,
+                        ItemMode.COAL_PLANT, ItemMode.NUCLEAR_PLANT, ItemMode.POLICE,
+                        ItemMode.BULLDOZE
+                    ]
+                    self.current_item = building_items[self.palette_cursor]
+                    self.palette_mode = False  # Exit palette mode after selection
+                    self.just_selected_item = True  # Set flag to prevent immediate placement
+
+                # Exit palette mode with Escape, Backspace, or X
+                if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_BACKSPACE) or pyxel.btnp(pyxel.KEY_X):
+                    self.palette_mode = False
+            else:
+                # Normal map cursor movement
+                # Horizontal movement (Arrow keys, WASD)
+                if (pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_A)) and self.cursor_x > 0:
+                    if self.key_repeat_timer <= 0:
+                        self.cursor_x -= 1
+                        moved = True
+                elif (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D)) and self.cursor_x < MAP_SIZE - 1:
+                    if self.key_repeat_timer <= 0:
+                        self.cursor_x += 1
+                        moved = True
+
+                # Vertical movement (Arrow keys, WASD)
+                if (pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_W)) and self.cursor_y > 0:
+                    if self.key_repeat_timer <= 0:
+                        self.cursor_y -= 1
+                        moved = True
+                elif (pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S)) and self.cursor_y < MAP_SIZE - 1:
+                    if self.key_repeat_timer <= 0:
+                        self.cursor_y += 1
+                        moved = True
         
         if moved:
             self.key_repeat_timer = 5  # Moderate repeat rate
@@ -4611,8 +4715,13 @@ class ConcLandMini:
             y = start_y + row * row_height
             
             # Highlight selected item or palette cursor (compact)
-            if self.palette_mode and i == self.palette_cursor:
-                # Palette cursor (flashing)
+            if self.focus_state == FocusState.PALETTE and i == self.focus_palette_index:
+                # PALETTE focus cursor (bright flashing)
+                color = 9 if pyxel.frame_count % 15 < 7 else 10
+                pyxel.rectb(x - 2, y - 2, icon_size + 4, icon_size + 4, color)  # Thicker border for focus
+                pyxel.rectb(x - 1, y - 1, icon_size + 2, icon_size + 2, 11)  # Inner border
+            elif self.palette_mode and i == self.palette_cursor:
+                # Legacy palette cursor (flashing)
                 color = 10 if pyxel.frame_count % 20 < 10 else 11
                 pyxel.rectb(x - 1, y - 1, icon_size + 2, icon_size + 2, color)
             elif self.current_item == item_mode:
@@ -4663,7 +4772,13 @@ class ConcLandMini:
                 icon_y = (panel_height - 16) // 2  # Center vertically
                 
                 # Highlight current view mode
-                if self.view_mode == mode:
+                if self.focus_state == FocusState.VIEW_MODE and self.focus_view_index == mode:
+                    # VIEW_MODE focus (bright flashing)
+                    color = 9 if pyxel.frame_count % 15 < 7 else 10
+                    pyxel.rectb(icon_x - 2, icon_y - 2, 20, 20, color)  # Thicker border for focus
+                    pyxel.rectb(icon_x - 1, icon_y - 1, 18, 18, 11)  # Inner border
+                elif self.view_mode == mode:
+                    # Normal highlight
                     pyxel.rectb(icon_x - 1, icon_y - 1, 18, 18, 11)
                 
                 # Draw the icon from the strip (each icon is 16px wide)
@@ -4680,7 +4795,13 @@ class ConcLandMini:
                 pyxel.rect(icon_x, icon_y, 16, 16, colors[i])
                 
                 # Highlight current mode
-                if self.view_mode == mode:
+                if self.focus_state == FocusState.VIEW_MODE and self.focus_view_index == mode:
+                    # VIEW_MODE focus (bright flashing)
+                    color = 9 if pyxel.frame_count % 15 < 7 else 10
+                    pyxel.rectb(icon_x - 2, icon_y - 2, 20, 20, color)  # Thicker border for focus
+                    pyxel.rectb(icon_x - 1, icon_y - 1, 18, 18, 11)  # Inner border
+                elif self.view_mode == mode:
+                    # Normal highlight
                     pyxel.rectb(icon_x - 1, icon_y - 1, 18, 18, 11)
                 
                 # Draw abbreviated text
@@ -4934,6 +5055,11 @@ class ConcLandMini:
             
             view_names = ["地図", "汚染", "地価", "電力", "交通", "水道"]
             self._draw_japanese_text(200, SCREEN_HEIGHT - 14, f"表示:{view_names[self.view_mode]}", 12)
+
+            # Draw focus indicator
+            focus_names = ["ゲーム", "パレット", "表示切替"]
+            focus_color = [7, 10, 12][self.focus_state.value]  # Different colors for each focus
+            self._draw_japanese_text(290, SCREEN_HEIGHT - 14, f"▶{focus_names[self.focus_state.value]}", focus_color)
         else:
             # First row
             if self.dev_mode:
@@ -4955,6 +5081,11 @@ class ConcLandMini:
             
             view_names = ["MAP", "POL", "VAL", "PWR", "TRF", "WTR"]
             pyxel.text(200, SCREEN_HEIGHT - 14, f"VIEW:{view_names[self.view_mode]}", 12)
+
+            # Draw focus indicator
+            focus_names = ["GAME", "PLT", "VIEW"]
+            focus_color = [7, 10, 12][self.focus_state.value]  # Different colors for each focus
+            pyxel.text(290, SCREEN_HEIGHT - 14, f"▶{focus_names[self.focus_state.value]}", focus_color)
     
     def _draw_minimap(self):
         """Draw minimap in top-left corner"""
