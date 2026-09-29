@@ -94,6 +94,18 @@ WINDOW_SCALE = 1  # ウィンドウスケール / Window scale
 MAP_SIZE = 100  # マップサイズ: 100x100タイル = 800x800ワールド / Map size: 100x100 tiles = 800x800 world
 TILE_SIZE = 8  # タイルサイズ（PNGタイルサイズと一致） / Tile size (matches PNG tile size)
 
+# UI language: "en" (default) or "ja" (needs BDF font). Override with CONCLAND_LANG=ja
+UI_LANG = os.environ.get("CONCLAND_LANG", "en").lower()
+
+# Screen layout used by both drawing and mouse hit-testing
+MAP_VIEW_TOP = 24          # Item panel height; map viewport starts below it
+INFO_PANEL_HEIGHT = 32     # Bottom info panel height
+MINIMAP_X, MINIMAP_Y, MINIMAP_SIZE = 4, 28, 40
+MAP_BAR_WIDTH = 112
+MAP_BAR_X = SCREEN_WIDTH - MAP_BAR_WIDTH - 2
+EDGE_SCROLL_MARGIN = 6     # px from viewport edge that starts mouse edge-scrolling
+EDGE_SCROLL_SPEED = 3      # px per frame
+
 class CellType(Enum):
     """
     セルタイプの定義
@@ -274,6 +286,15 @@ class ConcLandMini:
         
         # Game state
         self.running = True
+        # Mouse control state
+        try:
+            pyxel.mouse(True)  # Show the system cursor; the map cursor follows it
+        except Exception:
+            pass
+        self.camera_follow_cursor = True   # True: keyboard mode (camera centers on cursor)
+        self.mouse_prev = (-1, -1)
+        self.mouse_place_cell = None       # Last cell a held button acted on
+        self.mouse_pan_origin = None       # (mouse_x, mouse_y, camera_x, camera_y) while middle-dragging
         self.camera_x = 0
         self.camera_y = 0
         self.cursor_x = 8  # Start at center
@@ -410,40 +431,16 @@ class ConcLandMini:
             pyxel.run(self.update, self.draw)
 
     def _show_startup_tutorial(self):
-        """Show tutorial on startup"""
+        """Print a short getting-started guide to the console"""
         print("=" * 70)
         print("Welcome to ConcLand!")
         print("=" * 70)
+        print("NOTE (browser/WASM): arrow keys may not work - use WASD or the mouse.")
         print()
-        print("⚠️  BROWSER/WASM USERS: Arrow keys may not work. Use WASD for movement!")
-        print("⚠️  ブラウザ版ユーザー: 矢印キーは動作しない場合があります。WASDで移動してください！")
-        print()
-        print("Here's a quick introduction to the basic controls.")
-        print()
-        print("Getting Started:")
-        print()
-        print("1. まずは道路を作りましょう")
-        print("   → 4 キーを押して「道路」を選択")
-        print("   → WASDキーでカーソルを移動して「スペース」キーで配置")
-        print()
-        print("2. 住宅を作りましょう")
-        print("   → 1 キーを押して「住宅」を選択")
-        print("   → 道路に隣接する場所に「スペース」キーで配置")
-        print()
-        print("3. 発電所を建てましょう")
-        print("   → 8 キーを押して発電所をサイクル選択")
-        print("   → 資金が足りない場合は、待機してから")
-        print()
-        print("4. 時間が経つと都市が発展します")
-        print("   → 人口が増えると税収入が増えます")
-        print("   → さらに多くの施設を建てられるようになります")
-        print()
-        print("🆘 ヘルプ:")
-        print("・ゲーム中に「/」キーを押すと、いつでも操作ガイドが表示されます")
-        print("・「TAB」キーでフォーカスを切り替えられます（ゲーム→パレット→表示）")
-        print("・「M」キーでミニマップの表示/非表示を切り替え")
-        print()
-        print("✨ それでは、楽しい都市建設を！ Have fun!")
+        print("Mouse:    hover = move cursor, left click/drag = build, right click = bulldoze,")
+        print("          wheel = change tool, middle drag / screen edge = scroll map")
+        print("Keyboard: WASD/arrows move, SPACE build, X bulldoze, 1-9/0/-/= tools,")
+        print("          TAB focus (map > palette > view), / help, M minimap, O save, I load")
         print("=" * 70)
         print()
 
@@ -683,6 +680,9 @@ class ConcLandMini:
             except Exception:
                 # Fallback to English if font loading fails
                 self.font_loaded = False
+        if UI_LANG != "ja":
+            # English UI uses Pyxel's built-in font everywhere
+            self.font_loaded = False
     
     def _draw_japanese_text(self, x: int, y: int, text: str, color: int = 7):
         """Draw Japanese text using BDF font"""
@@ -759,7 +759,7 @@ class ConcLandMini:
                 # First press - show confirmation
                 self.save_confirm = True
                 self.confirm_timer = 120  # 2 seconds at 60 FPS
-                self.show_message = "Press O again to save / Oキーでもう一度でセーブ"
+                self.show_message = "Press O again to save"
                 self.message_timer = 120
 
         # Load with confirmation (I key)
@@ -773,7 +773,7 @@ class ConcLandMini:
                 # First press - show confirmation
                 self.load_confirm = True
                 self.confirm_timer = 120  # 2 seconds at 60 FPS
-                self.show_message = "Press I again to load / Iキーでもう一度でロード"
+                self.show_message = "Press I again to load"
                 self.message_timer = 120
         
         # Terrain save function removed (G key now used for middle park)
@@ -1067,6 +1067,8 @@ class ConcLandMini:
         
         if moved:
             self.key_repeat_timer = 5  # Moderate repeat rate
+            if self.focus_state == FocusState.GAME and not self.palette_mode:
+                self.camera_follow_cursor = True  # Keyboard drives the camera again
         
         # Item selection with QWERTY keys
         # Top row - Basic zones and infrastructure
@@ -1123,38 +1125,8 @@ class ConcLandMini:
         
         # No scrolling needed for fixed 2-row layout
         
-        # Mouse click on item palette
-        if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
-            mouse_x = pyxel.mouse_x
-            mouse_y = pyxel.mouse_y
-            
-            # Check if clicking in item palette area (2 rows = 36 pixels)
-            if mouse_y < 36:
-                # Check for item clicks in 2-row layout
-                building_items = [
-                    ItemMode.RESIDENTIAL, ItemMode.COMMERCIAL, ItemMode.INDUSTRIAL,
-                    ItemMode.ROAD, ItemMode.RAIL, ItemMode.PARK,
-                    ItemMode.WIRE, ItemMode.COAL_PLANT, ItemMode.NUCLEAR_PLANT,
-                    ItemMode.POLICE, ItemMode.BULLDOZE
-                ]
-                
-                # Calculate which item was clicked (3 rows x 8 columns)
-                icon_size = 8
-                gap = 2  # 2px gap
-                start_x = 64  # After info area
-                cols_per_row = 8
-                row_height = 11
-                start_y = 3
-                
-                for i, item_mode in enumerate(building_items):
-                    row = i // cols_per_row
-                    col = i % cols_per_row
-                    item_x = start_x + col * (icon_size + gap)
-                    item_y = start_y + row * row_height
-                    
-                    if item_x <= mouse_x < item_x + icon_size and item_y <= mouse_y < item_y + icon_size:
-                        self.current_item = item_mode
-                        break
+        # Mouse: palette / map bar / minimap / map interaction
+        self._handle_mouse()
         
         # Place/remove buildings (only in map mode, not palette mode)
         if not self.palette_mode:
@@ -1181,6 +1153,177 @@ class ConcLandMini:
         if pyxel.btnp(pyxel.KEY_X):
             self._remove_building()
     
+    # ------------------------------------------------------------------
+    # Mouse controls
+    # ------------------------------------------------------------------
+    @staticmethod
+    def _palette_items():
+        """Item palette layout shared by drawing and mouse hit-testing.
+        (ItemMode, icon tile id, English name, Japanese name); None = empty slot"""
+        return [
+            (ItemMode.RESIDENTIAL, 'icon_residential', "Residential", "住宅"),
+            (ItemMode.COMMERCIAL, 'icon_commercial', "Commercial", "商業"),
+            (ItemMode.INDUSTRIAL, 'icon_industrial', "Industrial", "工業"),
+            (ItemMode.AGRICULTURAL, 'icon_agricultural', "Farm", "農業"),
+            (ItemMode.ROAD, 'icon_road', "Road", "道路"),
+            (ItemMode.RAIL, 'icon_rail', "Rail", "鉄道"),
+            (ItemMode.STATION, 'icon_station', "Station", "駅"),
+            (ItemMode.WIRE, 'icon_wire', "Wire", "電線"),
+            (ItemMode.PARK, 'icon_park', "Park", "公園"),
+            (ItemMode.POLICE, 'icon_police', "Police", "警察"),
+            (ItemMode.FIRE, 'icon_fire', "Fire Dept", "消防"),
+            (ItemMode.HOSPITAL, 'icon_hospital', "Hospital", "病院"),
+            (ItemMode.BULLDOZE, 'icon_bulldozer', "Bulldoze", "撤去"),
+            (ItemMode.COAL_PLANT, 'icon_coal_plant', "Coal", "石炭"),
+            (ItemMode.NUCLEAR_PLANT, 'icon_nuclear_plant', "Nuclear", "原子力"),
+            (ItemMode.GAS_PLANT, 'icon_gas_plant', "Gas", "ガス"),
+            (ItemMode.WIND_PLANT, 'icon_wind_plant', "Wind", "風力"),
+            (ItemMode.WATER_PLANT, 'icon_water_plant', "Water", "浄水"),
+            (ItemMode.SEWAGE_PLANT, 'icon_sewage_plant', "Sewage", "下水"),
+            (ItemMode.PUMP, 'icon_pump', "Pump", "ポンプ"),
+            (ItemMode.SCHOOL, 'icon_school', "School", "学校"),
+            (ItemMode.UNIVERSITY, 'icon_university', "University", "大学"),
+            (ItemMode.PARK_MIDDLE, 'icon_park_middle', "Mid Park", "中公園"),
+            (None, None, "", ""),
+            (None, None, "", ""),
+        ]
+
+    @staticmethod
+    def _palette_item_rect(index: int):
+        """Screen rect (x, y, w, h) of palette slot `index` (2 rows x 12 columns)"""
+        info_width = 50
+        icon_size, gap, row_height = 8, 2, 10
+        row, col = divmod(index, 12)
+        return (info_width + 4 + col * (icon_size + gap), 3 + row * row_height, icon_size, icon_size)
+
+    @staticmethod
+    def _map_bar_rect(index: int):
+        """Screen rect (x, y, w, h) of view-mode icon `index` in the map bar"""
+        return (MAP_BAR_X + 2 + index * 18, (MAP_VIEW_TOP - 16) // 2, 16, 16)
+
+    def _minimap_visible(self) -> bool:
+        return self.always_show_minimap or self.is_moving
+
+    def _mouse_to_cell(self, mx: int, my: int):
+        """Map a screen position to a map cell, or None if outside the map viewport"""
+        if not (0 <= mx < SCREEN_WIDTH and MAP_VIEW_TOP <= my < SCREEN_HEIGHT - INFO_PANEL_HEIGHT):
+            return None
+        if self._minimap_visible() and (MINIMAP_X - 1 <= mx < MINIMAP_X + MINIMAP_SIZE + 1 and
+                                        MINIMAP_Y - 1 <= my < MINIMAP_Y + MINIMAP_SIZE + 1):
+            return None
+        cx = (mx + self.camera_x) // TILE_SIZE
+        cy = (my - MAP_VIEW_TOP + self.camera_y) // TILE_SIZE
+        if 0 <= cx < MAP_SIZE and 0 <= cy < MAP_SIZE:
+            return cx, cy
+        return None
+
+    def _set_camera(self, cam_x: int, cam_y: int):
+        """Move the camera directly (mouse mode) and clamp to map bounds"""
+        max_x = MAP_SIZE * TILE_SIZE - SCREEN_WIDTH
+        max_y = MAP_SIZE * TILE_SIZE - SCREEN_HEIGHT
+        self.camera_x = max(0, min(cam_x, max_x))
+        self.camera_y = max(0, min(cam_y, max_y))
+        self.camera_follow_cursor = False
+
+    def _handle_mouse(self):
+        """Mouse controls: hover moves the cursor, LMB builds, RMB bulldozes,
+        wheel changes tool, middle-drag or screen edges scroll the map,
+        clicks on the palette / map bar / minimap select tool, view and position."""
+        mx, my = pyxel.mouse_x, pyxel.mouse_y
+        mouse_moved = (mx, my) != self.mouse_prev
+        self.mouse_prev = (mx, my)
+        if self.palette_mode:
+            return
+
+        # --- Mouse wheel: cycle tools ---
+        wheel = getattr(pyxel, "mouse_wheel", 0)
+        if wheel:
+            modes = [it[0] for it in self._palette_items() if it[0] is not None]
+            idx = modes.index(self.current_item) if self.current_item in modes else 0
+            self.current_item = modes[(idx - (1 if wheel > 0 else -1)) % len(modes)]
+            self.just_selected_item = True
+
+        # --- Middle-button drag: pan camera ---
+        if pyxel.btnp(pyxel.MOUSE_BUTTON_MIDDLE):
+            self.mouse_pan_origin = (mx, my, self.camera_x, self.camera_y)
+        if pyxel.btn(pyxel.MOUSE_BUTTON_MIDDLE) and self.mouse_pan_origin:
+            ox, oy, cx, cy = self.mouse_pan_origin
+            self._set_camera(cx - (mx - ox), cy - (my - oy))
+            return
+        self.mouse_pan_origin = None
+
+        # --- Top panel: item palette and map-view bar ---
+        if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT) and my < MAP_VIEW_TOP:
+            for i, item in enumerate(self._palette_items()):
+                if item[0] is None:
+                    continue
+                x, y, w, h = self._palette_item_rect(i)
+                if x - 1 <= mx < x + w + 1 and y - 1 <= my < y + h + 1:
+                    self.current_item = item[0]
+                    self.focus_state = FocusState.GAME
+                    self.just_selected_item = True
+                    return
+            for i in range(6):
+                x, y, w, h = self._map_bar_rect(i)
+                if x - 1 <= mx < x + w + 1 and y - 1 <= my < y + h + 1:
+                    self.view_mode = i
+                    self.focus_view_index = i
+                    return
+            return
+
+        # --- Minimap click: jump camera ---
+        if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT) and self._minimap_visible() and \
+                MINIMAP_X <= mx < MINIMAP_X + MINIMAP_SIZE and MINIMAP_Y <= my < MINIMAP_Y + MINIMAP_SIZE:
+            map_x = (mx - MINIMAP_X) * MAP_SIZE // MINIMAP_SIZE
+            map_y = (my - MINIMAP_Y) * MAP_SIZE // MINIMAP_SIZE
+            self._set_camera(map_x * TILE_SIZE - SCREEN_WIDTH // 2, map_y * TILE_SIZE - SCREEN_HEIGHT // 2)
+            self.is_moving = True
+            self.move_timer = 30
+            return
+
+        cell = self._mouse_to_cell(mx, my)
+        if cell is None:
+            self.mouse_place_cell = None
+            return
+
+        # --- Edge scrolling while the pointer sits near the viewport edge ---
+        dx = dy = 0
+        if mx < EDGE_SCROLL_MARGIN:
+            dx = -EDGE_SCROLL_SPEED
+        elif mx >= SCREEN_WIDTH - EDGE_SCROLL_MARGIN:
+            dx = EDGE_SCROLL_SPEED
+        if my < MAP_VIEW_TOP + EDGE_SCROLL_MARGIN:
+            dy = -EDGE_SCROLL_SPEED
+        elif my >= SCREEN_HEIGHT - INFO_PANEL_HEIGHT - EDGE_SCROLL_MARGIN:
+            dy = EDGE_SCROLL_SPEED
+        if dx or dy:
+            self._set_camera(self.camera_x + dx, self.camera_y + dy)
+            cell = self._mouse_to_cell(mx, my) or cell
+
+        # --- Hover: map cursor follows the pointer without recentering the camera ---
+        if mouse_moved or dx or dy:
+            self.cursor_x, self.cursor_y = cell
+            self.camera_follow_cursor = False
+
+        # --- Left: build (drag for continuous tools), Right: bulldoze ---
+        left_p, left = pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT), pyxel.btn(pyxel.MOUSE_BUTTON_LEFT)
+        right_p, right = pyxel.btnp(pyxel.MOUSE_BUTTON_RIGHT), pyxel.btn(pyxel.MOUSE_BUTTON_RIGHT)
+        if left_p or right_p:
+            self.mouse_place_cell = None
+            self.just_selected_item = False
+        drag_tools = (ItemMode.BULLDOZE, ItemMode.PARK, ItemMode.ROAD, ItemMode.RAIL, ItemMode.WIRE,
+                      ItemMode.RESIDENTIAL, ItemMode.COMMERCIAL, ItemMode.INDUSTRIAL, ItemMode.AGRICULTURAL)
+        if left and cell != self.mouse_place_cell and (left_p or self.current_item in drag_tools):
+            self.cursor_x, self.cursor_y = cell
+            self._place_building()
+            self.mouse_place_cell = cell
+        elif right and cell != self.mouse_place_cell:
+            self.cursor_x, self.cursor_y = cell
+            self._remove_building()
+            self.mouse_place_cell = cell
+        elif not (left or right):
+            self.mouse_place_cell = None
+
     def _cycle_item(self, group: str):
         """Cycle through items in a group"""
         if group in self.item_cycles:
@@ -2169,7 +2312,7 @@ class ConcLandMini:
             return
         
         # No growth without road access within 3 cells
-        if self._count_nearby_type(x, y, CellType.ROAD, 3) == 0:
+        if not self._has_nearby_type(x, y, CellType.ROAD, 3):
             data.population = max(0, data.population - 1)  # Slower decline than no power
             return
         
@@ -2235,13 +2378,13 @@ class ConcLandMini:
                     # Assign random variant for low density (only when first developing)
                     if data.building_variant == 0:
                         data.building_variant = random.randint(1, 3)
-                
+                else:
+                    new_density = 0  # No population = empty zone
+
                 # Check for auto-upgrade to larger building when reaching HIGH density only
                 # Low density (1) and medium density (2) stay as 1x1 buildings
                 if new_density >= 3 and data.merged_size == 1:  # High density only (3+)
                     self._try_auto_upgrade_building(x, y, zone_type)
-                else:
-                    new_density = 0  # No population = empty zone
                 
                 # Set construction timer only for new construction (0 -> 1)
                 if new_density == 1 and old_density == 0:
@@ -2815,6 +2958,16 @@ class ConcLandMini:
                     data.under_construction = 60  # 1 second construction time for new buildings only
                 data.density = new_density
     
+    def _has_nearby_type(self, x: int, y: int, cell_type: CellType, radius: int) -> bool:
+        """True if any cell of `cell_type` lies within `radius` (early exit, bounds-clamped)"""
+        grid = self.grid
+        for ny in range(max(0, y - radius), min(MAP_SIZE, y + radius + 1)):
+            row = grid[ny]
+            for nx in range(max(0, x - radius), min(MAP_SIZE, x + radius + 1)):
+                if row[nx] == cell_type:
+                    return True
+        return False
+
     def _count_nearby_type(self, x: int, y: int, cell_type: CellType, radius: int) -> int:
         """Count nearby cells of specific type within radius"""
         count = 0
@@ -3089,15 +3242,16 @@ class ConcLandMini:
     
     def _update_rci_demand(self):
         """Update RCIA demand with sophisticated SimCity-style mechanics"""
-        # Count population by zone type
-        res_pop = sum(self.sim_data[y][x].population for y in range(MAP_SIZE) for x in range(MAP_SIZE) 
-                     if self.grid[y][x] == CellType.RESIDENTIAL)
-        com_pop = sum(self.sim_data[y][x].population for y in range(MAP_SIZE) for x in range(MAP_SIZE) 
-                     if self.grid[y][x] == CellType.COMMERCIAL)
-        ind_pop = sum(self.sim_data[y][x].population for y in range(MAP_SIZE) for x in range(MAP_SIZE) 
-                     if self.grid[y][x] == CellType.INDUSTRIAL)
-        agr_pop = sum(self.sim_data[y][x].population for y in range(MAP_SIZE) for x in range(MAP_SIZE) 
-                     if self.grid[y][x] == CellType.AGRICULTURAL)
+        # Count population by zone type in a single pass over the map
+        pops = {CellType.RESIDENTIAL: 0, CellType.COMMERCIAL: 0,
+                CellType.INDUSTRIAL: 0, CellType.AGRICULTURAL: 0}
+        for grid_row, data_row in zip(self.grid, self.sim_data):
+            for cell_type, data in zip(grid_row, data_row):
+                if cell_type in pops:
+                    pops[cell_type] += data.population
+        res_pop, com_pop = pops[CellType.RESIDENTIAL], pops[CellType.COMMERCIAL]
+        ind_pop, agr_pop = pops[CellType.INDUSTRIAL], pops[CellType.AGRICULTURAL]
+        prev = (self.res_demand, self.com_demand, self.ind_demand, self.agr_demand)
         
         # Employment ratios
         employment_ratio = (com_pop + ind_pop) / max(1, res_pop)
@@ -3137,10 +3291,11 @@ class ConcLandMini:
         
         # Tax effects
         tax_factor = 1.0 - (self.tax_rate / 20.0)  # Lower taxes increase demand
-        self.res_demand = int(self.res_demand * tax_factor)
-        self.com_demand = int(self.com_demand * tax_factor)
-        self.ind_demand = int(self.ind_demand * tax_factor)
-        self.agr_demand = int(self.agr_demand * tax_factor)
+        # Smooth toward the new target (SimCity-style valve) so demand does not flicker
+        targets = (self.res_demand * tax_factor, self.com_demand * tax_factor,
+                   self.ind_demand * tax_factor, self.agr_demand * tax_factor)
+        self.res_demand, self.com_demand, self.ind_demand, self.agr_demand = (
+            int(round(p + (t - p) * 0.5)) for p, t in zip(prev, targets))
     
     def _calculate_traffic_partial(self, start_y: int, end_y: int):
         """Calculate traffic for a portion of the map to reduce lag"""
@@ -3466,15 +3621,15 @@ class ConcLandMini:
             self.funds -= service_cost
     
     def _update_camera(self):
-        """Update camera to center on cursor"""
-        # Calculate target camera position
-        target_x = self.cursor_x * TILE_SIZE - SCREEN_WIDTH // 2
-        target_y = self.cursor_y * TILE_SIZE - SCREEN_HEIGHT // 2
-        
-        # Clamp camera to map bounds
+        """Update camera: center on cursor in keyboard mode, keep mouse-driven position otherwise"""
         max_camera_x = MAP_SIZE * TILE_SIZE - SCREEN_WIDTH
         max_camera_y = MAP_SIZE * TILE_SIZE - SCREEN_HEIGHT
-        
+        if self.camera_follow_cursor:
+            target_x = self.cursor_x * TILE_SIZE - SCREEN_WIDTH // 2
+            target_y = self.cursor_y * TILE_SIZE - SCREEN_HEIGHT // 2
+        else:
+            target_x, target_y = self.camera_x, self.camera_y
+
         new_camera_x = max(0, min(target_x, max_camera_x))
         new_camera_y = max(0, min(target_y, max_camera_y))
         
@@ -4636,35 +4791,7 @@ class ConcLandMini:
         self._draw_9slice_window(0, 0, info_width, panel_height)
         
         # Building tools arranged in 2 rows x 12 columns using 8x8 icons
-        building_items = [
-            # First row - zones, infrastructure, and basic services
-            (ItemMode.RESIDENTIAL, 'icon_residential', "住宅"),
-            (ItemMode.COMMERCIAL, 'icon_commercial', "商業"),
-            (ItemMode.INDUSTRIAL, 'icon_industrial', "工業"),
-            (ItemMode.AGRICULTURAL, 'icon_agricultural', "農業"),
-            (ItemMode.ROAD, 'icon_road', "道路"),
-            (ItemMode.RAIL, 'icon_rail', "鉄道"),
-            (ItemMode.STATION, 'icon_station', "駅"),
-            (ItemMode.WIRE, 'icon_wire', "電線"),
-            (ItemMode.PARK, 'icon_park', "公園"),
-            (ItemMode.POLICE, 'icon_police', "警察"),
-            (ItemMode.FIRE, 'icon_fire', "消防"),
-            (ItemMode.HOSPITAL, 'icon_hospital', "病院"),
-            (ItemMode.BULLDOZE, 'icon_bulldozer', "撤去"),
-            # Second row - power plants and utilities
-            (ItemMode.COAL_PLANT, 'icon_coal_plant', "石炭"),
-            (ItemMode.NUCLEAR_PLANT, 'icon_nuclear_plant', "原子力"),
-            (ItemMode.GAS_PLANT, 'icon_gas_plant', "ガス"),
-            (ItemMode.WIND_PLANT, 'icon_wind_plant', "風力"),
-            (ItemMode.WATER_PLANT, 'icon_water_plant', "浄水"),
-            (ItemMode.SEWAGE_PLANT, 'icon_sewage_plant', "下水"),
-            (ItemMode.PUMP, 'icon_pump', "ポンプ"),
-            (ItemMode.SCHOOL, 'icon_school', "学校"),
-            (ItemMode.UNIVERSITY, 'icon_university', "大学"),
-            (ItemMode.PARK_MIDDLE, 'icon_park_middle', "中公園"),
-            (None, None, ""),  # Empty slots
-            (None, None, "")
-        ]
+        building_items = self._palette_items()
         
         # Display current item info
         current_item_info = None
@@ -4674,43 +4801,25 @@ class ConcLandMini:
                 break
         
         if current_item_info:
-            item_name = current_item_info[2]
             item_cost = self._get_building_cost(self.current_item)
-            
+
             # Draw item name and cost (black text)
             if self.font_loaded:
-                self._draw_japanese_text(3, 4, item_name, 0)  # Black text
-                if item_cost > 0:
-                    # Use smaller font for cost with yen symbol
-                    cost_text = f"¥{item_cost}"
-                    pyxel.text(3, 15, cost_text, 0)  # Small font for cost
+                self._draw_japanese_text(3, 4, current_item_info[3], 0)
             else:
-                pyxel.text(3, 4, item_name[:8], 0)  # Black text
-                if item_cost > 0:
-                    pyxel.text(3, 15, f"¥{item_cost}", 0)  # Small font with yen
+                pyxel.text(3, 4, current_item_info[2][:11], 0)
+            if item_cost > 0:
+                pyxel.text(3, 15, f"${item_cost}", 0)
         
-        # 2 rows x 12 columns layout
-        icon_size = 8
-        gap = 2  # 2px gap between icons
-        start_x = info_width + 4
-        cols_per_row = 12  # More columns to fit in 2 rows
-        row_height = 10  # 8px icon + 2px spacing (reduced)
-        start_y = 3  # Top padding
-        
-        # Draw items in 2 rows
+        # Draw items in 2 rows x 12 columns (layout from _palette_item_rect)
         for i, item_data in enumerate(building_items):
             item_mode = item_data[0]
             tile_id = item_data[1]
-            item_name = item_data[2] if len(item_data) > 2 else ""
-            
+
             if item_mode is None:  # Skip empty slots
                 continue
-            
-            # Calculate position (2 rows, 12 columns)
-            row = i // cols_per_row
-            col = i % cols_per_row
-            x = start_x + col * (icon_size + gap)
-            y = start_y + row * row_height
+
+            x, y, icon_size, _ = self._palette_item_rect(i)
             
             # Highlight selected item or palette cursor (compact)
             if self.focus_state == FocusState.PALETTE and i == self.focus_palette_index:
@@ -4742,8 +4851,8 @@ class ConcLandMini:
     def _draw_map_bar(self, panel_height: int):
         """Draw map view mode selection bar"""
         # Map bar position - right side of screen
-        map_bar_width = 112  # 6 icons with 18px spacing: 2 + 6*18 = 110px needed
-        map_bar_x = SCREEN_WIDTH - map_bar_width - 2
+        map_bar_width = MAP_BAR_WIDTH  # 6 icons with 18px spacing: 2 + 6*18 = 110px needed
+        map_bar_x = MAP_BAR_X
         
         # Draw 9-slice window for map bar
         self._draw_9slice_window(map_bar_x, 0, map_bar_width, panel_height)
@@ -4766,8 +4875,7 @@ class ConcLandMini:
             for i, (mode, jp_name, en_name) in enumerate(view_modes):
                 # Position for each 16x16 icon
                 # Simple uniform spacing
-                icon_x = map_bar_x + 2 + i * 18  # 2px padding + icon index * (16px icon + 2px gap)
-                icon_y = (panel_height - 16) // 2  # Center vertically
+                icon_x, icon_y, _, _ = self._map_bar_rect(i)  # Shared with mouse hit-testing
                 
                 # Highlight current view mode
                 if self.focus_state == FocusState.VIEW_MODE and self.focus_view_index == mode:
@@ -4921,98 +5029,49 @@ class ConcLandMini:
             pyxel.text(bar_x + 26, y_pos, f"{value}", 7)
 
     def _draw_simplified_help(self):
-        """簡素化されたオンスクリーンヘルプを描画 / Draw simplified on-screen help"""
-
-        # 初回起動時は常にヘルプを表示
+        """Draw the on-screen controls guide (toggle with /)"""
         if self.show_startup_help:
             self.help_visible = True
-            self.help_timer = 600  # 10秒間表示（初回のみ）
+            self.help_timer = 600
 
         if not self.help_visible:
             return
 
-        help_width = 260
-        help_height = 200
-
-        # 背景（半透明黒）
+        help_width, help_height = 268, 214
         overlay_x = (SCREEN_WIDTH - help_width) // 2
         overlay_y = (SCREEN_HEIGHT - help_height) // 2
-
-        # 外枠
         pyxel.rect(overlay_x, overlay_y, help_width, help_height, 0)
         pyxel.rectb(overlay_x, overlay_y, help_width, help_height, 7)
 
-        # タイトル
-        title = "操作ガイド - Hで閉じる"
-        title_x = (SCREEN_WIDTH - len(title) * 4) // 2
-        pyxel.text(title_x, overlay_y + 8, title, 7)
+        title = "CONTROLS  (press / to close)"
+        pyxel.text((SCREEN_WIDTH - len(title) * 4) // 2, overlay_y + 6, title, 7)
 
-        # 内容
-        y = overlay_y + 25
-
-        # 移動
-        pyxel.text(overlay_x + 10, y, "【移動】", 6)
-        y += 12
-        pyxel.text(overlay_x + 15, y, "矢印キー または K/J/H/L", 7)
-        y += 18
-
-        # アクション
-        pyxel.text(overlay_x + 10, y, "【アクション】", 6)
-        y += 12
-        pyxel.text(overlay_x + 15, y, "スペース: 建物配置", 7)
-        y += 10
-        pyxel.text(overlay_x + 15, y, "X: 削除", 7)
-        y += 18
-
-        # ツール選択（簡易版）
-        pyxel.text(overlay_x + 10, y, "【ツール選択】", 6)
-        y += 12
-
-        # ItemModeから主要なツールを表示
-        tools = [
-            ("Q", "住宅", ItemMode.RESIDENTIAL),
-            ("W", "商業", ItemMode.COMMERCIAL),
-            ("E", "工業", ItemMode.INDUSTRIAL),
-            ("R", "道路", ItemMode.ROAD),
-            ("T", "鉄道", ItemMode.RAIL),
-            ("Y", "公園", ItemMode.PARK),
-            ("U", "電線", ItemMode.WIRE),
-            ("I", "発電所", ItemMode.COAL_PLANT),
-            ("P", "公共", ItemMode.POLICE),
-            ("A", "農業", ItemMode.AGRICULTURAL),
-            ("\\", "削除", ItemMode.BULLDOZE),
+        lines = [
+            ("MOUSE", 6),
+            ("  Hover: move cursor   L-click/drag: build", 7),
+            ("  R-click: bulldoze    Wheel: change tool", 7),
+            ("  Middle-drag / edge: scroll map", 7),
+            ("  Click palette, view icons or minimap", 7),
+            ("KEYBOARD", 6),
+            ("  WASD / Arrows: move   SPACE/Z: build", 7),
+            ("  X: bulldoze   TAB: focus map/palette/view", 7),
+            ("  1 Res  2 Com  3 Ind  4 Road  5 Rail/Stn", 7),
+            ("  6 Park  7 Wire  8 Power  9 Port  0 Public", 7),
+            ("  - Bulldoze  = Farm  (repeat key to cycle)", 7),
+            ("OTHER", 6),
+            ("  M: minimap  G: graphs  O: save  I: load", 7),
+            ("  F1-F5: stats/economy/traffic/disaster/policy", 7),
         ]
-
-        for key, name, item in tools:
-            is_selected = (self.current_item == item)
-
-            # 選択中のツールを強調
-            if is_selected:
-                pyxel.rect(overlay_x + 8, y - 2, help_width - 16, 10, 6)
-
-            # キーとツール名
-            pyxel.text(overlay_x + 12, y, key, 10 if is_selected else 7)
-            pyxel.text(overlay_x + 30, y, name, 10 if is_selected else 6)
-
-            y += 11
-
-        y += 10
-
-        # その他機能
-        pyxel.text(overlay_x + 10, y, "【その他】", 6)
-        y += 12
-        pyxel.text(overlay_x + 15, y, "V: 表示切替", 7)
-        y += 10
-        pyxel.text(overlay_x + 15, y, "S/E/T/D/P: 詳細UI", 7)
-        y += 10
-        pyxel.text(overlay_x + 15, y, f"資金: ¥{self.funds:,}", 11)
-
-        # 終了方法
-        y += 15
-        pyxel.text(overlay_x + 10, y, "【終了】", 6)
-        y += 10
-        pyxel.text(overlay_x + 15, y, "H キーで閉じる", 7)
-
+        y = overlay_y + 18
+        for text, color in lines:
+            pyxel.text(overlay_x + 8, y, text, color)
+            y += 12 if color == 6 else 10
+            if color == 6:
+                y -= 2
+        item = next((it for it in self._palette_items() if it[0] == self.current_item), None)
+        tool_name = item[2] if item else self.current_item.name.title()
+        pyxel.text(overlay_x + 8, overlay_y + help_height - 12,
+                   f"Tool: {tool_name}   Funds: ${self.funds:,}", 11)
 
     def _draw_ui(self):
         """Draw the UI overlay"""
@@ -5061,13 +5120,13 @@ class ConcLandMini:
         else:
             # First row
             if self.dev_mode:
-                pyxel.text(4, SCREEN_HEIGHT - 28, f"¥:INF", 11)
+                pyxel.text(4, SCREEN_HEIGHT - 28, "$:INF", 11)
             else:
-                pyxel.text(4, SCREEN_HEIGHT - 28, f"¥{self.funds}", 7)
+                pyxel.text(4, SCREEN_HEIGHT - 28, f"${self.funds}", 7)
             pyxel.text(60, SCREEN_HEIGHT - 28, f"POP:{self.total_population}", 7)
             emp_pct = int(self.employment_rate * 100)
             pyxel.text(140, SCREEN_HEIGHT - 28, f"EMP:{emp_pct}%", 10 if emp_pct > 70 else 9)
-            pyxel.text(200, SCREEN_HEIGHT - 28, f"GDP:¥{self.gdp}", 12)
+            pyxel.text(200, SCREEN_HEIGHT - 28, f"GDP:${self.gdp}", 12)
             
             # Second row - RCI demand and view mode
             pyxel.text(4, SCREEN_HEIGHT - 14, "R:", 7)
@@ -5083,15 +5142,15 @@ class ConcLandMini:
             # Draw focus indicator
             focus_names = ["GAME", "PLT", "VIEW"]
             focus_color = [7, 10, 12][self.focus_state.value]  # Different colors for each focus
-            pyxel.text(290, SCREEN_HEIGHT - 14, f"▶{focus_names[self.focus_state.value]}", focus_color)
+            pyxel.text(290, SCREEN_HEIGHT - 14, f">{focus_names[self.focus_state.value]}", focus_color)
     
     def _draw_minimap(self):
         """Draw minimap in top-left corner"""
         # Minimap settings - smaller size for 100x100 map
         # Use 40x40 pixels for 100x100 map (0.4 pixel per tile)
-        minimap_display_size = 40  # Display size in pixels (half of previous 80)
-        minimap_x = 4
-        minimap_y = 28  # Below the reduced item panel (24px)
+        minimap_display_size = MINIMAP_SIZE  # Display size in pixels
+        minimap_x = MINIMAP_X
+        minimap_y = MINIMAP_Y  # Below the reduced item panel (24px)
         border_color = 1  # Dark blue border
         
         # Draw minimap background (black)
@@ -5262,33 +5321,7 @@ class ConcLandMini:
             pyxel.pset(minimap_x + scaled_vp_x, minimap_y + scaled_vp_y + i, 7)
             pyxel.pset(minimap_x + scaled_vp_x + scaled_vp_w - 1, minimap_y + scaled_vp_y + i, 7)
         
-        # Add minimap click handling in update
-        if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
-            mouse_x = pyxel.mouse_x
-            mouse_y = pyxel.mouse_y
-            
-            # Check if click is within minimap
-            if (minimap_x <= mouse_x < minimap_x + minimap_display_size and
-                minimap_y <= mouse_y < minimap_y + minimap_display_size):
-                # Calculate new camera position (unscale from 80x80 to 100x100)
-                map_x = (mouse_x - minimap_x) * MAP_SIZE // minimap_display_size
-                map_y = (mouse_y - minimap_y) * MAP_SIZE // minimap_display_size
-                
-                # Center the viewport on the clicked position
-                new_camera_x = (map_x * TILE_SIZE) - (SCREEN_WIDTH // 2)
-                new_camera_y = (map_y * TILE_SIZE) - ((SCREEN_HEIGHT - 36 - 32) // 2)
-                
-                # Clamp camera position
-                max_camera_x = MAP_SIZE * TILE_SIZE - SCREEN_WIDTH
-                max_camera_y = MAP_SIZE * TILE_SIZE - (SCREEN_HEIGHT - 36 - 32)
-                self.camera_x = max(0, min(new_camera_x, max_camera_x))
-                self.camera_y = max(0, min(new_camera_y, max_camera_y))
-                
-                # Update movement state
-                self.is_moving = True
-                self.move_timer = 30
-                self.prev_camera_x = self.camera_x
-                self.prev_camera_y = self.camera_y
+        # (Minimap clicks are handled in _handle_mouse)
 
 if __name__ == "__main__":
     # Direct launch for Pyxel Web compatibility

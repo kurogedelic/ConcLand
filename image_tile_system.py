@@ -174,7 +174,7 @@ class ImageTileSystem:
             
             # Other tiles (fallback wire for compatibility)
             'wire': 'assets/tiles/power/solar.png',  # Fallback
-            'park': 'assets/tiles/park/small_park.png',
+            'park': 'assets/tiles/park/park.png',
             
             # Facilities
             'coal_plant': 'assets/tiles/power/coal.png',
