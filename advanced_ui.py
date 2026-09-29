@@ -63,12 +63,12 @@ class AdvancedUI:
         
         # Graph data
         self.graphs: Dict[str, GraphData] = {
-            "population": GraphData([], name="人口", color=11),
-            "funds": GraphData([], name="資金", color=10), 
+            "population": GraphData([], name="Pop", color=11),
+            "funds": GraphData([], name="Funds", color=10), 
             "gdp": GraphData([], name="GDP", color=12),
-            "traffic": GraphData([], name="交通量", color=8),
-            "pollution": GraphData([], name="汚染", color=2),
-            "land_value": GraphData([], name="地価", color=14)
+            "traffic": GraphData([], name="Traffic", color=8),
+            "pollution": GraphData([], name="Pollution", color=2),
+            "land_value": GraphData([], name="Land Value", color=14)
         }
         
         # Menu system
@@ -243,8 +243,8 @@ class AdvancedUI:
         pyxel.rectb(0, panel_y, self.screen_width, self.info_panel_height, 7)
         
         # Basic info
-        info_text = f"資金: ¥{game_data.get('funds', 0):,} | 人口: {game_data.get('population', 0):,}"
-        info_text += f" | 雇用: {game_data.get('employment', 0):,}"
+        info_text = f"Funds: ${game_data.get('funds', 0):,} | Pop: {game_data.get('population', 0):,}"
+        info_text += f" | Jobs: {game_data.get('employment', 0):,}"
         pyxel.text(5, panel_y + 5, info_text, 7)
         
         # RCI demand
@@ -252,19 +252,19 @@ class AdvancedUI:
         com_demand = game_data.get('com_demand', 0)
         ind_demand = game_data.get('ind_demand', 0)
         
-        demand_text = f"需要 - R:{res_demand:+d} C:{com_demand:+d} I:{ind_demand:+d}"
+        demand_text = f"Demand R:{res_demand:+d} C:{com_demand:+d} I:{ind_demand:+d}"
         pyxel.text(5, panel_y + 15, demand_text, 7)
         
         # Current tool info
         if 'current_tool' in game_data:
-            tool_text = f"ツール: {game_data['current_tool']}"
+            tool_text = f"Tool: {game_data['current_tool']}"
             if 'tool_cost' in game_data:
-                tool_text += f" (¥{game_data['tool_cost']})"
+                tool_text += f" (${game_data['tool_cost']})"
             pyxel.text(self.screen_width - 150, panel_y + 5, tool_text, 7)
         
         # View mode info
         if 'view_mode' in game_data:
-            view_text = f"表示: {game_data['view_mode']}"
+            view_text = f"View: {game_data['view_mode']}"
             pyxel.text(self.screen_width - 150, panel_y + 15, view_text, 7)
         
         # Mini-graphs
@@ -272,7 +272,7 @@ class AdvancedUI:
         
         # Controls hint
         controls_y = panel_y - 15
-        pyxel.text(5, controls_y, "[ESC]メニュー [S]統計 [E]経済 [T]交通 [D]災害", 6)
+        pyxel.text(5, controls_y, "[ESC] Menu  [S] Stats  [E] Economy  [T] Traffic  [D] Disasters", 6)
     
     def _draw_statistics_panel(self, game_data: Dict[str, Any]):
         """Draw statistics panel with graphs"""
@@ -280,8 +280,8 @@ class AdvancedUI:
         
         # Title bar
         pyxel.rect(0, 0, self.screen_width, 25, 1)
-        pyxel.text(10, 8, "統計情報 - Statistics", 7)
-        pyxel.text(self.screen_width - 100, 8, "[ESC] 戻る", 6)
+        pyxel.text(10, 8, "Statistics", 7)
+        pyxel.text(self.screen_width - 100, 8, "[ESC] Back", 6)
         
         # Main content area
         content_y = 30
@@ -308,21 +308,21 @@ class AdvancedUI:
         
         # Title bar
         pyxel.rect(0, 0, self.screen_width, 25, 2)
-        pyxel.text(10, 8, "経済管理 - Economy Management", 7)
-        pyxel.text(self.screen_width - 100, 8, "[ESC] 戻る", 6)
+        pyxel.text(10, 8, "Economy Management", 7)
+        pyxel.text(self.screen_width - 100, 8, "[ESC] Back", 6)
         
         y = 35
         
         # Economic indicators
-        pyxel.text(10, y, "経済指標:", 7)
+        pyxel.text(10, y, "Indicators:", 7)
         y += 15
         
         indicators = [
-            ("GDP", f"¥{game_data.get('gdp', 0):,.0f}"),
-            ("失業率", f"{game_data.get('unemployment', 0)*100:.1f}%"),
-            ("インフレ率", f"{game_data.get('inflation', 0)*100:+.1f}%"),
-            ("貿易収支", f"¥{game_data.get('trade_balance', 0):+,}"),
-            ("生産性", f"{game_data.get('productivity', 1.0):.2f}x")
+            ("GDP", f"${game_data.get('gdp', 0):,.0f}"),
+            ("Unemployment", f"{game_data.get('unemployment', 0)*100:.1f}%"),
+            ("Inflation", f"{game_data.get('inflation', 0)*100:+.1f}%"),
+            ("Trade Balance", f"${game_data.get('trade_balance', 0):+,}"),
+            ("Productivity", f"{game_data.get('productivity', 1.0):.2f}x")
         ]
         
         for name, value in indicators:
@@ -331,13 +331,13 @@ class AdvancedUI:
         
         # Tax policy
         y += 10
-        pyxel.text(10, y, "税率設定:", 7)
+        pyxel.text(10, y, "Tax Rates:", 7)
         y += 15
         
         tax_rates = [
-            ("住宅", game_data.get('residential_tax_rate', 0.08)),
-            ("商業", game_data.get('commercial_tax_rate', 0.12)),
-            ("工業", game_data.get('industrial_tax_rate', 0.10))
+            ("Residential", game_data.get('residential_tax_rate', 0.08)),
+            ("Commercial", game_data.get('commercial_tax_rate', 0.12)),
+            ("Industrial", game_data.get('industrial_tax_rate', 0.10))
         ]
         
         for name, rate in tax_rates:
@@ -346,23 +346,23 @@ class AdvancedUI:
         
         # Monthly budget
         y += 10
-        pyxel.text(10, y, "月次予算:", 7)
+        pyxel.text(10, y, "Monthly Budget:", 7)
         y += 15
         
         revenue = game_data.get('monthly_revenue', 0)
         expenses = game_data.get('monthly_expenses', 0)
         net = revenue - expenses
         
-        pyxel.text(15, y, f"収入: ¥{revenue:,}", 11 if revenue > 0 else 7)
+        pyxel.text(15, y, f"Revenue: ${revenue:,}", 11 if revenue > 0 else 7)
         y += 12
-        pyxel.text(15, y, f"支出: ¥{expenses:,}", 8 if expenses > 0 else 7)
+        pyxel.text(15, y, f"Expenses: ${expenses:,}", 8 if expenses > 0 else 7)
         y += 12
-        pyxel.text(15, y, f"純収入: ¥{net:+,}", 11 if net > 0 else 8)
+        pyxel.text(15, y, f"Net: ${net:+,}", 11 if net > 0 else 8)
         
         # Resource summary (if economic system active)
         if 'resources' in game_data:
             y += 20
-            pyxel.text(10, y, "資源状況:", 7)
+            pyxel.text(10, y, "Resources:", 7)
             y += 15
             
             resources = game_data['resources']
@@ -373,7 +373,7 @@ class AdvancedUI:
                 net_rate = production - consumption
                 
                 color = 11 if net_rate > 0 else 8 if net_rate < 0 else 7
-                pyxel.text(15, y, f"{info['name']}: {amount:.0f} ({net_rate:+.1f}/月)", color)
+                pyxel.text(15, y, f"{info['name']}: {amount:.0f} ({net_rate:+.1f}/mo)", color)
                 y += 12
                 
                 if y > self.screen_height - 50:
@@ -385,8 +385,8 @@ class AdvancedUI:
         
         # Title bar
         pyxel.rect(0, 0, self.screen_width, 25, 12)
-        pyxel.text(10, 8, "交通管理 - Traffic Management", 7)
-        pyxel.text(self.screen_width - 100, 8, "[ESC] 戻る", 6)
+        pyxel.text(10, 8, "Traffic Management", 7)
+        pyxel.text(self.screen_width - 100, 8, "[ESC] Back", 6)
         
         y = 35
         
@@ -394,13 +394,13 @@ class AdvancedUI:
         traffic_data = game_data.get('traffic_system', {})
         
         stats = [
-            ("運行バス数", traffic_data.get('total_buses', 0)),
-            ("運行路線数", traffic_data.get('active_routes', 0)),
-            ("乗客数", traffic_data.get('total_passengers', 0)),
-            ("待機乗客", traffic_data.get('waiting_passengers', 0)),
-            ("平均混雑度", f"{traffic_data.get('average_congestion', 0)*100:.1f}%"),
-            ("渋滞箇所", traffic_data.get('bottlenecks', 0)),
-            ("信号機数", traffic_data.get('traffic_lights', 0))
+            ("Buses", traffic_data.get('total_buses', 0)),
+            ("Routes", traffic_data.get('active_routes', 0)),
+            ("Passengers", traffic_data.get('total_passengers', 0)),
+            ("Waiting", traffic_data.get('waiting_passengers', 0)),
+            ("Avg Congestion", f"{traffic_data.get('average_congestion', 0)*100:.1f}%"),
+            ("Bottlenecks", traffic_data.get('bottlenecks', 0)),
+            ("Traffic Lights", traffic_data.get('traffic_lights', 0))
         ]
         
         for name, value in stats:
@@ -410,7 +410,7 @@ class AdvancedUI:
         # Traffic improvements suggestions
         if 'improvement_suggestions' in traffic_data:
             y += 10
-            pyxel.text(10, y, "改善提案:", 7)
+            pyxel.text(10, y, "Suggestions:", 7)
             y += 15
             
             for suggestion in traffic_data['improvement_suggestions'][:5]:
@@ -418,7 +418,7 @@ class AdvancedUI:
                 cost = suggestion.get('cost', 0)
                 reason = suggestion.get('reason', '')
                 
-                pyxel.text(15, y, f"• {suggestion['type']} ({pos[0]},{pos[1]}) - ¥{cost}", 7)
+                pyxel.text(15, y, f"- {suggestion['type']} ({pos[0]},{pos[1]}) - ${cost}", 7)
                 y += 10
                 if len(reason) < 50:
                     pyxel.text(20, y, reason, 6)
@@ -436,8 +436,8 @@ class AdvancedUI:
         
         # Title bar
         pyxel.rect(0, 0, self.screen_width, 25, 8)
-        pyxel.text(10, 8, "災害管理 - Disaster Management", 7)
-        pyxel.text(self.screen_width - 100, 8, "[ESC] 戻る", 6)
+        pyxel.text(10, 8, "Disaster Management", 7)
+        pyxel.text(self.screen_width - 100, 8, "[ESC] Back", 6)
         
         y = 35
         
@@ -445,12 +445,12 @@ class AdvancedUI:
         disaster_data = game_data.get('disaster_system', {})
         
         status_items = [
-            ("発生中災害", disaster_data.get('active_disasters', 0)),
-            ("総被害額", f"¥{disaster_data.get('total_damage_cost', 0):,}"),
-            ("倒壊建物", disaster_data.get('buildings_destroyed', 0)),
-            ("負傷者数", disaster_data.get('casualties', 0)),
-            ("緊急施設", disaster_data.get('emergency_services', 0)),
-            ("次回警戒まで", f"{disaster_data.get('disaster_cooldown', 0)//60}秒")
+            ("Active Disasters", disaster_data.get('active_disasters', 0)),
+            ("Total Damage", f"${disaster_data.get('total_damage_cost', 0):,}"),
+            ("Destroyed", disaster_data.get('buildings_destroyed', 0)),
+            ("Casualties", disaster_data.get('casualties', 0)),
+            ("Emergency Svcs", disaster_data.get('emergency_services', 0)),
+            ("Next Alert In", f"{disaster_data.get('disaster_cooldown', 0)//60}s")
         ]
         
         for name, value in status_items:
@@ -460,7 +460,7 @@ class AdvancedUI:
         # Active disasters
         if 'active_disasters' in disaster_data and disaster_data['active_disasters']:
             y += 10
-            pyxel.text(10, y, "発生中災害:", 8)
+            pyxel.text(10, y, "Active Disasters:", 8)
             y += 15
             
             for disaster in disaster_data['active_disasters'][:5]:
@@ -469,9 +469,9 @@ class AdvancedUI:
                 pos = disaster['center']
                 remaining = disaster['remaining_time']
                 
-                pyxel.text(15, y, f"• {disaster_type.upper()} ({severity}) - ({pos[0]},{pos[1]})", 8)
+                pyxel.text(15, y, f"- {disaster_type.upper()} ({severity}) - ({pos[0]},{pos[1]})", 8)
                 y += 10
-                pyxel.text(20, y, f"残り時間: {remaining}秒", 6)
+                pyxel.text(20, y, f"Remaining: {remaining}s", 6)
                 y += 15
         
         # Warning display
@@ -479,7 +479,7 @@ class AdvancedUI:
             warning_msg = disaster_data.get('warning_message', '')
             pyxel.rect(10, self.screen_height - 80, self.screen_width - 20, 30, 8)
             pyxel.rectb(10, self.screen_height - 80, self.screen_width - 20, 30, 7)
-            pyxel.text(15, self.screen_height - 70, "⚠️ 災害警報", 7)
+            pyxel.text(15, self.screen_height - 70, "! DISASTER ALERT", 7)
             pyxel.text(15, self.screen_height - 58, warning_msg[:50], 7)
     
     def _draw_policies_panel(self, game_data: Dict[str, Any]):
@@ -488,15 +488,15 @@ class AdvancedUI:
         
         # Title bar
         pyxel.rect(0, 0, self.screen_width, 25, 11)
-        pyxel.text(10, 8, "政策管理 - Policy Management", 7)
-        pyxel.text(self.screen_width - 100, 8, "[ESC] 戻る", 6)
+        pyxel.text(10, 8, "Policy Management", 7)
+        pyxel.text(self.screen_width - 100, 8, "[ESC] Back", 6)
         
         y = 35
         
         # Available policies
         policies = game_data.get('available_policies', [])
         
-        pyxel.text(10, y, "利用可能な政策:", 7)
+        pyxel.text(10, y, "Available Policies:", 7)
         y += 15
         
         for i, policy in enumerate(policies[:8]):
@@ -505,7 +505,7 @@ class AdvancedUI:
             
             pyxel.text(15, y, f"{i+1}. {policy['name']}", color)
             y += 10
-            pyxel.text(20, y, f"費用: ¥{policy['cost']:,} 期間: {policy['duration']}ヶ月", 6)
+            pyxel.text(20, y, f"Cost: ${policy['cost']:,}  Duration: {policy['duration']} mo", 6)
             y += 10
             pyxel.text(20, y, policy['description'][:40], 6)
             y += 15
@@ -514,7 +514,7 @@ class AdvancedUI:
         active_policies = game_data.get('active_policies_count', 0)
         if active_policies > 0:
             y += 10
-            pyxel.text(10, y, f"実施中政策: {active_policies}件", 11)
+            pyxel.text(10, y, f"Active policies: {active_policies}", 11)
     
     def _draw_graph(self, graph_data: GraphData, x: int, y: int, width: int, height: int):
         """Draw a graph with the given data"""
@@ -574,19 +574,19 @@ class AdvancedUI:
         pop_graph = self.graphs["population"]
         if len(pop_graph.values) > 1:
             self._draw_mini_line_graph(pop_graph.values, x, y, width//3, height, 11)
-            pyxel.text(x + 2, y + height - 8, "人口", 6)
+            pyxel.text(x + 2, y + height - 8, "Pop", 6)
         
         # Funds mini-graph  
         funds_graph = self.graphs["funds"]
         if len(funds_graph.values) > 1:
             self._draw_mini_line_graph(funds_graph.values, x + width//3, y, width//3, height, 10)
-            pyxel.text(x + width//3 + 2, y + height - 8, "資金", 6)
+            pyxel.text(x + width//3 + 2, y + height - 8, "Funds", 6)
         
         # Traffic mini-graph
         traffic_graph = self.graphs["traffic"]
         if len(traffic_graph.values) > 1:
             self._draw_mini_line_graph(traffic_graph.values, x + 2*width//3, y, width//3, height, 8)
-            pyxel.text(x + 2*width//3 + 2, y + height - 8, "交通", 6)
+            pyxel.text(x + 2*width//3 + 2, y + height - 8, "Traffic", 6)
     
     def _draw_mini_line_graph(self, values: List[float], x: int, y: int, width: int, height: int, color: int):
         """Draw a mini line graph"""
@@ -637,7 +637,7 @@ class AdvancedUI:
             
             # Draw item text
             color = 7 if item.enabled else 6
-            pyxel.text(menu_x + 10, item_y, item.japanese_text, color)
+            pyxel.text(menu_x + 10, item_y, item.text, color)
             
             # Draw shortcut key
             if item.shortcut_key:

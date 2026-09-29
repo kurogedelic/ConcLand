@@ -44,11 +44,20 @@ python main.py --debug
 **Arrow keys may not work in the browser version. Please use WASD for cursor movement!**
 ブラウザ版では矢印キーが動作しない場合があります。カーソル移動にはWASDキーをご使用ください！
 
+### Mouse Controls
+- **Hover**: Move the map cursor (camera stays put)
+- **Left click / drag**: Build with the current tool (drag paints roads, rails, wires, zones)
+- **Right click / drag**: Bulldoze
+- **Mouse wheel**: Cycle tools
+- **Middle drag / screen edge**: Scroll the map
+- **Click**: Item palette selects a tool, map-bar icons switch view, minimap jumps the camera
+
 ### Basic Controls
 - **WASD**: Cursor movement (⚠️ Arrow keys may not work in browser)
 - **Space/Z**: Place building
 - **TAB**: Cycle focus states (Game → Palette → View Mode)
 - **ESC**: Return to game focus
+- **Language**: UI text is English by default. Run with `CONCLAND_LANG=ja` to use the Japanese BDF font.
 
 ### Focus System
 The game uses a focus system to prevent key conflicts:
